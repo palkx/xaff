@@ -1,5 +1,21 @@
-[![David](https://img.shields.io/david/iSm1le/mxs.svg?style=flat-square)](https://david-dm.org/iSm1le/mxs)
-[![Travis](https://img.shields.io/travis/iSm1le/mxs.svg?style=flat-square)](https://travis-ci.org/iSm1le/mxs)
-[![bitHound](https://img.shields.io/bithound/code/github/ism1le/mxs.svg?style=flat-square)](https://www.bithound.io/github/ism1le/mxs)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/iSm1le/mxs/master/LICENSE)
-# mxs
+# mxs-app
+
+> xaff source
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
