@@ -102,5 +102,20 @@ export default {
 
   getUser () {
     return this.user.data.user
+  },
+
+  updateToken (context) {
+    if (this.checkAuth()) {
+      context.$http.get(context.apiEndpoint + '/users/updtoken', { headers: this.getAuthHeader() }).then((data, err) => {
+        if (!err) {
+          if (this.verify(data.body.token, jwtPublicKey)) {
+            localStorage.setItem('id_token', data.body.token)
+            this.user.authenticated = true
+            return true
+          }
+        }
+      })
+    }
+    return false
   }
 }

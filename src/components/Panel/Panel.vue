@@ -1,7 +1,7 @@
 <template>
   <div id="panel">
     <header class="header">
-      <a href="" class="logo">
+      <a href="/panel/users" class="logo">
         <span class="logo-mini" style="display: none;">
           <b>X</b>
         </span>
@@ -49,8 +49,7 @@ import { version } from '../../../package.json'
 export default {
   data () {
     return {
-      sidePanel: true,
-      currentUser: auth.getUser()
+      sidePanel: true
     }
   },
   methods: {
@@ -71,6 +70,9 @@ export default {
     },
     userEmailMD5 () {
       return md5(this.currentUser.email)
+    },
+    currentUser () {
+      return auth.getUser()
     }
   },
   created () {
@@ -78,6 +80,7 @@ export default {
       auth.logout()
       this.$router.push('/')
     }
+    auth.updateToken(this)
   }
 }
 </script>

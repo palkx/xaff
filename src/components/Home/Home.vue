@@ -31,10 +31,6 @@
 <script>
 import auth from '../../auth'
 
-/* TODO
-*  jwt auth
-*/
-
 export default {
   data () {
     return {
