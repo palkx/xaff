@@ -26,7 +26,7 @@
             </thead>
             <tbody>
               <tr v-for="(user, index) in users" :key="index">
-                <td>{{ index + 1 }}</td>
+                <td>{{ (index + 1) + ((Page - 1) * limit) }}</td>
                 <td>{{ (user.name == null ? 'NONE' : user.name) }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
@@ -42,13 +42,13 @@
         <nav v-if="pagination" aria-label="Navigation">
           <ul class="pagination justify-content-center" @click="changePage()">
             <li class="page-item" v-if="Page > 1"><router-link :to="'users?page=' + (Page - 1)"  class="page-link">Previous</router-link></li>
-            <li class="page-item" v-if="(Page - 3) > 1"><router-link :to="'users?page=' + (Page - 3)" class="page-link">{{ Page - 3 }}</router-link></li>
-            <li class="page-item" v-if="(Page - 2) > 1"><router-link :to="'users?page=' + (Page - 2)" class="page-link">{{ Page - 2 }}</router-link></li>
-            <li class="page-item" v-if="(Page - 1) > 1"><router-link :to="'users?page=' + (Page - 1)" class="page-link">{{ Page - 1 }}</router-link></li>
+            <li class="page-item" v-if="(Page - 3) >= 1"><router-link :to="'users?page=' + (Page - 3)" class="page-link">{{ Page - 3 }}</router-link></li>
+            <li class="page-item" v-if="(Page - 2) >= 1"><router-link :to="'users?page=' + (Page - 2)" class="page-link">{{ Page - 2 }}</router-link></li>
+            <li class="page-item" v-if="(Page - 1) >= 1"><router-link :to="'users?page=' + (Page - 1)" class="page-link">{{ Page - 1 }}</router-link></li>
             <li class="page-item active"><router-link :to="'users?page=' + Page" class="page-link">{{ Page }}</router-link></li>
-            <li class="page-item" v-if="(Page + 1) < Pages"><router-link :to="'users?page=' + (Page + 1)" class="page-link">{{ Page + 1 }}</router-link></li>
-            <li class="page-item" v-if="(Page + 2) < Pages"><router-link :to="'users?page=' + (Page + 2)" class="page-link">{{ Page + 2 }}</router-link></li>
-            <li class="page-item" v-if="(Page + 3) < Pages"><router-link :to="'users?page=' + (Page + 3)" class="page-link">{{ Page + 3 }}</router-link></li>
+            <li class="page-item" v-if="(Page + 1) <= Pages"><router-link :to="'users?page=' + (Page + 1)" class="page-link">{{ Page + 1 }}</router-link></li>
+            <li class="page-item" v-if="(Page + 2) <= Pages"><router-link :to="'users?page=' + (Page + 2)" class="page-link">{{ Page + 2 }}</router-link></li>
+            <li class="page-item" v-if="(Page + 3) <= Pages"><router-link :to="'users?page=' + (Page + 3)" class="page-link">{{ Page + 3 }}</router-link></li>
             <li class="page-item" v-if="Page < Pages"><router-link :to="'users?page=' + (Page + 1)" class="page-link">Next</router-link></li>
           </ul>
         </nav>

@@ -21,11 +21,7 @@
           </div>
           <div class="form-group">
             <label for="passwordInput">Password</label>
-            <input type="password" class="form-control" id="passwordInput" required placeholder="password" v-model="password">
-          </div>
-          <div class="form-group">
-            <label for="passwordRepeatInput">Repeat password</label>
-            <input type="password" class="form-control" id="passwordRepeatInput" required placeholder="repeat password" v-model="passwordConfirm">
+            <input type="password" class="form-control" id="passwordInput" placeholder="password" v-model="password">
           </div>
           <router-link to="/panel/users" class="btn btn-primary">Go back</router-link>
           <button type="submit" class="btn btn-success" :disabled="!isChanged" @click="edit()">Edit</button>
@@ -45,8 +41,7 @@ export default {
       userOld: {},
       isChanged: false,
       passwordChanged: false,
-      password: '',
-      passwordConfirm: ''
+      password: ''
     }
   },
   methods: {
@@ -59,7 +54,7 @@ export default {
     },
     edit () {
       if (this.isChanged) {
-        if (this.password && (this.password === this.passwordConfirm)) {
+        if (this.password) {
           this.user.password = this.password
           this.passwordChanged = true
         }

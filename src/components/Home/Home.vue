@@ -2,21 +2,21 @@
   <div id="home">
     <div class="container-fluid justify-content-center">
       <div class="row">
-        <div class="col-sm-12 hero">
+        <div class="col-sm-3 hero">
           <div v-if="!showLogin">
             Hello, you visited <b>{{ siteTitle }}</b><br>
-            <button class="btn btn-primary" @click="$router.push('panel')" v-if="authenticated">Go to Panel</button>
+            <button class="btn btn-primary" @click="$router.push('panel/ryt')" v-if="authenticated">Go to Panel</button>
             <button class="btn btn-primary" @click="showLogin = !showLogin" v-else>Auth me!</button>
           </div>
           <div v-else>
             <form @submit.prevent>
               <div class="form-group">
                 <label for="emailInput">Email</label>
-                <input type="email" id="emailInput" placeholder="email@example.com" required v-model="credentials.email">
+                <input type="email" class="form-control" id="emailInput" required placeholder="email@example.com" v-model="credentials.email">
               </div>
               <div class="form-group">
                 <label for="passwordInput">Password</label>
-                <input type="password" id="passwordInput" placeholder="Password" required v-model="credentials.password">
+                <input type="password" class="form-control" id="passwordInput" required placeholder="password" v-model="credentials.password">
               </div>
               <button class="btn btn-primary" @click="showLogin = !showLogin">X</button>
               <input class="btn btn-success" type="submit" @click="submit()" value="Auth!"/>
@@ -36,15 +36,15 @@ export default {
     return {
       siteTitle: 'XaFF',
       credentials: {
-        email: null,
-        password: null
+        email: '',
+        password: ''
       },
       showLogin: false
     }
   },
   methods: {
     submit () {
-      auth.login(this, this.credentials, 'panel')
+      auth.login(this, this.credentials, 'panel/ryt')
     }
   },
   computed: {
@@ -71,7 +71,7 @@ export default {
     font-size: 24px;
     background: rgba(0,0,0,.7);
     max-width: 30%;
-    margin: 0 auto;
-    padding: 2%;
+    margin: auto;
+    padding: 30px;
   }
 </style>

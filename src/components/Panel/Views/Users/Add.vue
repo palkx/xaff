@@ -38,7 +38,7 @@ export default {
   data () {
     return {
       user: {
-        name: 'Alex T.',
+        name: '',
         username: '',
         email: '',
         roles: [],

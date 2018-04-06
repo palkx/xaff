@@ -31,7 +31,7 @@
             </thead>
             <tbody>
               <tr v-for="(video, index) in ytVideos" :key="index">
-                <td>{{ index + 1 }}</td>
+                <td>{{ (index + 1) + ((Page - 1) * limit) }}</td>
                 <td :title="video.friendlyName">{{ (video.friendlyName == null ? 'NONE' : video.friendlyName) }}</td>
                 <td>{{ video.videoId }}</td>
                 <td>{{ video.views }}</td>
