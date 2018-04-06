@@ -120,6 +120,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+td {
+  text-overflow:ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+  max-width: 200px;
+}
+
 .content {
   min-height: 250px;
   padding: 15px;

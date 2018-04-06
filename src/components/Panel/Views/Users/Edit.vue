@@ -1,34 +1,34 @@
 <template>
   <div class="container-fluid">
     <div class="row justify-content-center">
-      <div class="col-sm-auto">
+      <div class="col-sm-4">
         <form @submit.prevent @change="changed($event)">
           <div class="form-group">
             <label for="nameInput">Name</label>
-            <input type="text" id="nameInput" placeholder="Name" v-model="user.name">
+            <input type="text" class="form-control" id="nameInput" required placeholder="Kirill S." v-model="user.name">
           </div>
           <div class="form-group">
-            <label for="userNameInput">username</label>
-            <input type="text" id="userNameInput" placeholder="username" required v-model="user.username">
+            <label for="usernameInput">Username</label>
+            <input type="text" class="form-control" id="usernameInput" required placeholder="iSm1le" v-model="user.username">
           </div>
           <div class="form-group">
             <label for="emailInput">Email</label>
-            <input type="email" id="emailInput" placeholder="test@example.com" v-model="user.email">
+            <input type="email" class="form-control" id="emailInput" required placeholder="email@example.com" v-model="user.email">
           </div>
           <div class="form-group">
             <label for="rolesInput">Roles</label>
-            <input type="text" id="rolesInput" placeholder="null">
+            <input type="text" class="form-control bg-danger text-white" id="rolesInput" disabled value="Under Development">
           </div>
           <div class="form-group">
             <label for="passwordInput">Password</label>
-            <input type="password" id="passwordInput" placeholder="Password" v-model="password">
+            <input type="password" class="form-control" id="passwordInput" required placeholder="password" v-model="password">
           </div>
           <div class="form-group">
-            <label for="passwordConfirmInput">Confirm password</label>
-            <input type="password" id="passwordConfirmInput" placeholder="Confirm password" v-model="passwordConfirm">
+            <label for="passwordRepeatInput">Repeat password</label>
+            <input type="password" class="form-control" id="passwordRepeatInput" required placeholder="repeat password" v-model="passwordConfirm">
           </div>
-          <router-link to="/panel/users" class="btn btn-warning">Go back</router-link>
-          <button type="submit" class="btn btn-primary" :disabled="!isChanged" @click="edit()">Edit</button>
+          <router-link to="/panel/users" class="btn btn-primary">Go back</router-link>
+          <button type="submit" class="btn btn-success" :disabled="!isChanged" @click="edit()">Edit</button>
         </form>
       </div>
     </div>
@@ -45,8 +45,8 @@ export default {
       userOld: {},
       isChanged: false,
       passwordChanged: false,
-      password: null,
-      passwordConfirm: null
+      password: '',
+      passwordConfirm: ''
     }
   },
   methods: {

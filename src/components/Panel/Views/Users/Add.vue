@@ -1,29 +1,29 @@
 <template>
   <div class="container-fluid">
     <div class="row justify-content-center">
-      <div class="col-sm-auto">
+      <div class="col-sm-4">
         <form @submit.prevent>
           <div class="form-group">
             <label for="nameInput">Name</label>
-            <input type="text" id="nameInput" placeholder="Name" required v-model="user.name">
+            <input type="text" class="form-control" id="nameInput" required placeholder="Kirill S." v-model="user.name">
           </div>
           <div class="form-group">
-            <label for="userNameInput">username</label>
-            <input type="text" id="userNameInput" placeholder="username" required v-model="user.username">
+            <label for="usernameInput">Username</label>
+            <input type="text" class="form-control" id="usernameInput" required placeholder="iSm1le" v-model="user.username">
           </div>
           <div class="form-group">
             <label for="emailInput">Email</label>
-            <input type="email" id="emailInput" placeholder="test@example.com" required v-model="user.email">
+            <input type="email" class="form-control" id="emailInput" required placeholder="email@example.com" v-model="user.email">
           </div>
           <div class="form-group">
             <label for="rolesInput">Roles</label>
-            <input type="text" id="rolesInput" placeholder="null">
+            <input type="text" class="form-control bg-danger text-white" id="rolesInput" disabled value="Under Development">
           </div>
           <div class="form-group">
             <label for="passwordInput">Password</label>
-            <input type="password" id="passwordInput" placeholder="Password" required v-model="user.password">
+            <input type="password" class="form-control" id="passwordInput" required placeholder="password" v-model="user.password">
           </div>
-          <router-link to="/panel/users" class="btn btn-warning">Go back</router-link>
+          <router-link to="/panel/users" class="btn btn-primary">Go back</router-link>
           <button type="submit" class="btn btn-success" @click="add()">Add</button>
         </form>
       </div>
@@ -39,10 +39,10 @@ export default {
     return {
       user: {
         name: 'Alex T.',
-        username: null,
-        email: null,
+        username: '',
+        email: '',
         roles: [],
-        password: null
+        password: ''
       }
     }
   },
