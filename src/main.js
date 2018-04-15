@@ -23,3 +23,13 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+/*
+TODO:
+Handle erros from api
+Add notifications about events
+Change panel css
+Change npm to yarn
+Upgrade webpack to 4
+Deploy to github
+*/
