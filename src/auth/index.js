@@ -60,12 +60,12 @@ export default {
   },
 
   verify (token, key) {
-    let decoded = jwt.verify(token, key)
-    if (!decoded) {
-      return false
-    } else {
+    try {
+      const decoded = jwt.verify(token, key)
       this.user.data = decoded
       return true
+    } catch (e) {
+      return false
     }
   },
 
