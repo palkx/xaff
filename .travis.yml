@@ -16,8 +16,7 @@ addons:
   ssh_known_hosts:
     secure: w4NIfy8c7EJTfHSINTueC8nKqYMsOTWEB0cCz43XrjVEebqNfIbsXuf4I8eXyco3peoz/rwlCeWZOSORlvmi40lRNNBoGITsdgcs4CeEJLN247vMmn0rtdLM4wCIN8jk7qbSkbX5mYnBTj5NX83NcAjWd2rDYlpRO6XOJv5AYLkIIL1TyVcU4A85ySBmrHR1r7aPNDb0ltogP596K2WNbVF0nurbOn4fXzAoLvedIc7K1U848o0jpO5e9XC2OyaeW/DVyj9v3tJCRoUz0wfawi73/F0IN30f+K9vInsALTPrQIAsVcZFuhRnakcdJvP05ckv+O1MevFN5p0pTlpoNA2FGYO/3Wcqo02cw16BPTyGeiLHUi6un0EN1DWtyst6lEkjbIsFLnoqhhexvQXPVtaN/qxCXSGE/1Zz3cScTb+n2RGzmkz3sNsWMmegEYO9fkjqRuOfNXdKgml73kJ2oqHdApTkz7ZGrd4nRExXBF/nZIKxrWT0/fFiTVzutO3FUIOhqSf8zPwnUfsr+wQ3RJg3QOHZok5m5JMo5ijoguPENSNO3gShS6M06dTulAQETnpLg9/HAPi/kkDf9PrMHbmRr/w2zLrn8aD//rWhUIvGoP8LsxGVFK3bKf+SESgHaxCM1TRSh12lRPiv/P1TKiwsX/QR1ZZ1KVv1y4EN6mQ=
 before_install:
-  - openssl aes-256-cbc -K $encrypted_d792c87ca25f_key -iv $encrypted_d792c87ca25f_iv
-  -in .travis/id_rsa.enc -out .travis/id_rsa -d
+  - openssl aes-256-cbc -K $encrypted_d792c87ca25f_key -iv $encrypted_d792c87ca25f_iv -in .travis/id_rsa.enc -out .travis/id_rsa -d
 install: skip
 jobs:
   include:
