@@ -41,7 +41,8 @@ export default {
       userOld: {},
       isChanged: false,
       passwordChanged: false,
-      password: ''
+      password: '',
+      currentUser: ''
     }
   },
   methods: {
@@ -52,15 +53,24 @@ export default {
         this.isChanged = false
       }
     },
-    edit () {
+    async edit () {
       if (this.isChanged) {
         if (this.password) {
           this.user.password = this.password
           this.passwordChanged = true
         }
         this.user.changedBy = this.currentUser.username
-        this.$http.put(this.apiEndpoint + '/users/id/' + this.id, this.user, { headers: auth.getAuthHeader() }).then((data, err) => {
-          if (!err) {
+        try {
+          const response = await this.$http.put(this.apiEndpoint + '/users/id/' + this.id, this.user, { headers: await auth.getAuthHeader() })
+          if (response.status === 200) {
+            this.$notify({
+              group: 'responses',
+              type: 'success',
+              'animation-type': 'velocity',
+              title: 'Users',
+              text: 'User edited successfully',
+              reverse: true
+            })
             if ((this.user._id === this.id) && this.passwordChanged) {
               auth.logout()
               this.$router.push('/')
@@ -68,25 +78,40 @@ export default {
               this.$router.push('/panel/users')
             }
           }
-        })
+        } catch (e) {
+          this.$notify({
+            group: 'responses',
+            type: 'error',
+            'animation-type': 'velocity',
+            title: 'Users',
+            text: 'Error when editing user data',
+            reverse: true
+          })
+        }
       }
     }
   },
   computed: {
-    currentUser () {
-      return auth.getUser()
-    },
     id () {
       return this.$route.params.id
     }
   },
-  created () {
-    this.$http.get(this.apiEndpoint + '/users/id/' + this.id, { headers: auth.getAuthHeader() }).then((data, err) => {
-      if (!err) {
-        this.user = data.body
-        this.userOld = JSON.stringify(this.user)
-      }
-    })
+  async created () {
+    this.currentUser = await auth.getUser()
+    try {
+      const response = await this.$http.get(this.apiEndpoint + '/users/id/' + this.id, { headers: await auth.getAuthHeader() })
+      this.user = response.body
+      this.userOld = JSON.stringify(this.user)
+    } catch (e) {
+      this.$notify({
+        group: 'responses',
+        type: 'error',
+        'animation-type': 'velocity',
+        title: 'Users',
+        text: 'Error when loading user data',
+        reverse: true
+      })
+    }
   }
 }
 </script>

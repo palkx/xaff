@@ -47,7 +47,8 @@ export default {
     return {
       video: {},
       videoOld: {},
-      isChanged: false
+      isChanged: false,
+      currentUser: ''
     }
   },
   methods: {
@@ -58,32 +59,56 @@ export default {
         this.isChanged = false
       }
     },
-    edit () {
+    async edit () {
       if (this.isChanged) {
         this.video.changedBy = this.currentUser.username
-        this.$http.put(this.apiEndpoint + '/yrvs/id/' + this.id, this.video, { headers: auth.getAuthHeader() }).then((data, err) => {
-          if (!err) {
+        try {
+          const response = await this.$http.put(this.apiEndpoint + '/yrvs/id/' + this.id, this.video, { headers: await auth.getAuthHeader() })
+          if (response.status === 200) {
+            this.$notify({
+              group: 'responses',
+              type: 'success',
+              'animation-type': 'velocity',
+              title: 'RandomYT',
+              text: 'Video with id `' + this.video.videoId + '`edited successfully',
+              reverse: true
+            })
             this.$router.push('/panel/ryt')
           }
-        })
+        } catch (e) {
+          this.$notify({
+            group: 'responses',
+            type: 'error',
+            'animation-type': 'velocity',
+            title: 'RandomYT',
+            text: 'Error when editing video data',
+            reverse: true
+          })
+        }
       }
     }
   },
   computed: {
     id () {
       return this.$route.params.id
-    },
-    currentUser () {
-      return auth.getUser()
     }
   },
-  created () {
-    this.$http.get(this.apiEndpoint + '/yrvs/id/' + this.id, { headers: auth.getAuthHeader() }).then((data, err) => {
-      if (!err) {
-        this.video = data.body
-        this.videoOld = JSON.stringify(this.video)
-      }
-    })
+  async created () {
+    try {
+      this.currentUser = await auth.getUser()
+      const response = await this.$http.get(this.apiEndpoint + '/yrvs/id/' + this.id, { headers: await auth.getAuthHeader() })
+      this.video = response.body
+      this.videoOld = JSON.stringify(this.video)
+    } catch (e) {
+      this.$notify({
+        group: 'responses',
+        type: 'error',
+        'animation-type': 'velocity',
+        title: 'RandomYT',
+        text: 'Error when loading video data',
+        reverse: true
+      })
+    }
   }
 }
 </script>
