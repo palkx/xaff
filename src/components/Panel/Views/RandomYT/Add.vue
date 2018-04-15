@@ -46,24 +46,66 @@ export default {
   data () {
     return {
       video: {
-        cheangedBy: null
+        cheangedBy: null,
+        currentUser: ''
       }
     }
   },
   methods: {
-    add () {
+    async add () {
       this.video.changedBy = this.currentUser.username
-      this.$http.post(this.apiEndpoint + '/yrvs', this.video, { headers: auth.getAuthHeader() }).then((data, err) => {
-        if (!err) {
+      try {
+        const response = await this.$http.post(this.apiEndpoint + '/yrvs', this.video, { headers: await auth.getAuthHeader() })
+        if (response.status === 200) {
+          this.$notify({
+            group: 'responses',
+            type: 'success',
+            'animation-type': 'velocity',
+            title: 'RandomYT',
+            text: 'Video successfully added',
+            reverse: true
+          })
           this.$router.push('/panel/ryt')
         }
-      })
+      } catch (e) {
+        console.log(e)
+        switch (e.status) {
+          case 400:
+            this.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'RandomYT',
+              text: 'Error when adding a video',
+              reverse: true
+            })
+            break
+          case 401:
+            this.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'RandomYT',
+              text: 'Video with id `' + this.video.videoId + '` already existing',
+              reverse: true
+            })
+            break
+          default:
+            this.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'RandomYT',
+              text: 'Undefined error',
+              reverse: true
+            })
+            break
+        }
+      }
     }
   },
-  computed: {
-    currentUser () {
-      return auth.getUser()
-    }
+  async created () {
+    this.currentUser = await auth.getUser()
   }
 }
 </script>

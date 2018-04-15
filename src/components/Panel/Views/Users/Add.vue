@@ -42,24 +42,65 @@ export default {
         username: '',
         email: '',
         roles: [],
-        password: ''
+        password: '',
+        currentUser: ''
       }
     }
   },
   methods: {
-    add () {
+    async add () {
       this.user.changedBy = this.currentUser.username
-      this.$http.post(this.apiEndpoint + '/users', this.user, { headers: auth.getAuthHeader() }).then((data, err) => {
-        if (!err) {
+      try {
+        const response = await this.$http.post(this.apiEndpoint + '/users', this.user, { headers: await auth.getAuthHeader() })
+        if (response.status === 200) {
+          this.$notify({
+            group: 'responses',
+            type: 'success',
+            'animation-type': 'velocity',
+            title: 'Users',
+            text: 'User added successfully',
+            reverse: true
+          })
           this.$router.push('/panel/users')
         }
-      })
+      } catch (e) {
+        switch (e.status) {
+          case 400:
+            this.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'Users',
+              text: 'Error when adding a user',
+              reverse: true
+            })
+            break
+          case 401:
+            this.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'Users',
+              text: 'User already existing',
+              reverse: true
+            })
+            break
+          default:
+            this.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'Users',
+              text: 'Undefined error',
+              reverse: true
+            })
+            break
+        }
+      }
     }
   },
-  computed: {
-    currentUser () {
-      return auth.getUser()
-    }
+  async created () {
+    this.currentUser = await auth.getUser()
   }
 }
 </script>

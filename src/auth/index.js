@@ -21,9 +21,9 @@ export default {
     data: null
   },
 
-  login (context, creds, redirect) {
+  async login (context, creds, redirect) {
     if (localStorage.getItem('id_token')) {
-      if (this.verify(localStorage.getItem('id_token'), jwtPublicKey)) {
+      if (await this.verify(localStorage.getItem('id_token'), jwtPublicKey)) {
         if (redirect) {
           context.$router.push(redirect)
         }
@@ -34,36 +34,78 @@ export default {
         this.login()
       }
     } else {
-      context.$http.post(context.apiEndpoint + '/users/login', creds).then((data, err) => {
-        if (!err) {
-          if (this.verify(data.body.token, jwtPublicKey)) {
-            localStorage.setItem('id_token', data.body.token)
-            this.user.authenticated = true
-            if (redirect) {
-              context.$router.push(redirect)
-            }
-            return true
-          }
+      try {
+        const userData = await context.$http.post(context.apiEndpoint + '/users/login', creds)
+        localStorage.setItem('id_token', userData.body.token)
+        this.user.authenticated = true
+        context.$notify({
+          group: 'responses',
+          type: 'success',
+          'animation-type': 'velocity',
+          title: 'Authentication',
+          text: 'You logged in!',
+          reverse: true
+        })
+        if (redirect) {
+          context.$router.push(redirect)
         }
-      })
+        return true
+      } catch (e) {
+        console.log(e)
+        switch (e.status) {
+          case 400:
+            context.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'Authentication',
+              text: 'Server received corrupted data. Try again.',
+              reverse: true
+            })
+            break
+          case 403:
+            context.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'Authentication',
+              text: 'Incorrect user email or password.',
+              reverse: true
+            })
+            break
+          default:
+            context.$notify({
+              group: 'responses',
+              type: 'error',
+              'animation-type': 'velocity',
+              title: 'Authentication',
+              text: 'Undefined error',
+              reverse: true
+            })
+            break
+        }
+        return false
+      }
     }
   },
 
-  signup (context, creds, redirect) {
-    context.$http.post(context.apiEndpoint + '/users', creds, (data) => {
-      localStorage.setItem('id_token', data.id_token)
+  async signup (context, creds, redirect) {
+    try {
+      const userData = await context.$http.post(context.apiEndpoint + '/users', creds)
+      localStorage.setItem('id_token', userData.id_token)
       this.user.authenticated = true
       if (redirect) {
         this.router.push(redirect)
       }
-    })
+    } catch (e) {
+      return false
+    }
   },
 
-  verify (token, key) {
+  async verify (token, key) {
     try {
-      const decoded = jwt.verify(token, key)
-      this.user.data = decoded
-      return true
+      const decoded = await jwt.verify(token, key)
+      return decoded
     } catch (e) {
       return false
     }
@@ -74,10 +116,11 @@ export default {
     this.user.authenticated = false
   },
 
-  checkAuth () {
-    let ljwt = localStorage.getItem('id_token')
+  async checkAuth () {
+    const ljwt = localStorage.getItem('id_token')
     if (ljwt) {
-      if (this.verify(ljwt, jwtPublicKey)) {
+      this.user.data = await this.verify(ljwt, jwtPublicKey)
+      if (this.user.data) {
         this.user.authenticated = true
       } else {
         this.logout()
@@ -92,30 +135,35 @@ export default {
     return context.apiEndpoint
   },
 
-  getAuthHeader () {
-    if (this.checkAuth()) {
+  async getAuthHeader () {
+    if (await this.checkAuth()) {
       return {
         'x-auth-token': localStorage.getItem('id_token')
       }
     }
   },
 
-  getUser () {
-    return this.user.data.user
-  },
-
-  updateToken (context) {
-    if (this.checkAuth()) {
-      context.$http.get(context.apiEndpoint + '/users/updtoken', { headers: this.getAuthHeader() }).then((data, err) => {
-        if (!err) {
-          if (this.verify(data.body.token, jwtPublicKey)) {
-            localStorage.setItem('id_token', data.body.token)
-            this.user.authenticated = true
-            return true
-          }
-        }
-      })
+  async getUser () {
+    const ljwt = localStorage.getItem('id_token')
+    if (ljwt) {
+      this.user.data = await this.verify(ljwt, jwtPublicKey)
+      return this.user.data.user
     }
     return false
+  },
+
+  async updateToken (context) {
+    try {
+      if (await this.checkAuth()) {
+        const response = await context.$http.get(context.apiEndpoint + '/users/updtoken', { headers: this.getAuthHeader() })
+        if (await this.verify(response.body.token, jwtPublicKey)) {
+          localStorage.setItem('id_token', jwtPublicKey)
+          this.user.authenticated = true
+          return true
+        }
+      }
+    } catch (e) {
+      return false
+    }
   }
 }

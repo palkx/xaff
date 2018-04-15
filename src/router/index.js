@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Resource from 'vue-resource'
+import BootstrapVue from 'bootstrap-vue'
+import Notification from 'vue-notification'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Home from '@/components/Home/Home'
 
@@ -14,6 +18,8 @@ import RandomYTEdit from '@/components/Panel/Views/RandomYT/Edit'
 
 Vue.use(Router)
 Vue.use(Resource)
+Vue.use(BootstrapVue)
+Vue.use(Notification)
 
 export default new Router({
   mode: 'history',

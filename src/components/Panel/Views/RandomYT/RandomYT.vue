@@ -80,12 +80,21 @@ export default {
     }
   },
   methods: {
-    changePage () {
-      this.getVideos()
+    async changePage () {
+      await this.getVideos()
     },
-    vDelete (i, id) {
-      this.$http.delete(this.apiEndpoint + '/yrvs/id/' + id, { headers: auth.getAuthHeader() }).then((data, err) => {
-        if (!err) {
+    async vDelete (i, id) {
+      try {
+        const response = await this.$http.delete(this.apiEndpoint + '/yrvs/id/' + id, { headers: await auth.getAuthHeader() })
+        if (response.status === 200) {
+          this.$notify({
+            group: 'responses',
+            type: 'success',
+            'animation-type': 'velocity',
+            title: 'RandomYT',
+            text: 'Video ' + id + ' deleted successfully',
+            reverse: true
+          })
           this.ytVideos.splice(i, 1)
           if (this.ytVideos.length <= 0) {
             if (this.Page > 1) {
@@ -94,14 +103,31 @@ export default {
             }
           }
         }
-      })
+      } catch (e) {
+        this.$notify({
+          group: 'responses',
+          type: 'error',
+          'animation-type': 'velocity',
+          title: 'RandomYT',
+          text: 'Can`t delete video',
+          reverse: true
+        })
+      }
     },
-    getVideos () {
-      this.$http.get(this.apiEndpoint + '/yrvs?limit=' + this.limit + '&page=' + this.Page).then((data, err) => {
-        if (!err) {
-          this.ytVideos = data.body
-        }
-      })
+    async getVideos () {
+      try {
+        const videos = await this.$http.get(this.apiEndpoint + '/yrvs?limit=' + this.limit + '&page=' + this.Page)
+        this.ytVideos = videos.body
+      } catch (e) {
+        this.$notify({
+          group: 'responses',
+          type: 'error',
+          'animation-type': 'velocity',
+          title: 'RandomYT',
+          text: 'Undefined error',
+          reverse: true
+        })
+      }
     }
   },
   computed: {
@@ -109,19 +135,27 @@ export default {
       return Number(this.$route.query.page || 1)
     }
   },
-  created () {
-    this.$http.get(this.apiEndpoint + '/yrvs/count').then((data, err) => {
-      if (!err) {
-        if (data.body >= this.limit) {
-          this.pagination = true
-          this.Pages = Math.floor(Number(data.body - 1) / this.limit) + 1
-        }
+  async created () {
+    try {
+      const response = await this.$http.get(this.apiEndpoint + '/yrvs/count')
+      if (response.body >= this.limit) {
+        this.pagination = true
+        this.Pages = Math.floor(Number(response.body - 1) / this.limit) + 1
       }
+    } catch (e) {
+      this.$notify({
+        group: 'responses',
+        type: 'error',
+        'animation-type': 'velocity',
+        title: 'RandomYT',
+        text: 'Undefined error',
+        reverse: true
+      })
       if (this.Page - 1 > this.Pages) {
         this.$router.push('/panel/ryt')
       }
-    })
-    this.getVideos()
+    }
+    await this.getVideos()
   }
 }
 </script>

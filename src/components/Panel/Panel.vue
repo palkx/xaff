@@ -49,7 +49,11 @@ import { version } from '../../../package.json'
 export default {
   data () {
     return {
-      sidePanel: true
+      sidePanel: true,
+      userName: '',
+      name: '',
+      userEmailMD5: '',
+      currentUser: ''
     }
   },
   methods: {
@@ -61,26 +65,19 @@ export default {
   computed: {
     appVer () {
       return version
-    },
-    userName () {
-      return this.currentUser.username
-    },
-    name () {
-      return this.currentUser.name
-    },
-    userEmailMD5 () {
-      return md5(this.currentUser.email)
-    },
-    currentUser () {
-      return auth.getUser()
     }
   },
-  created () {
-    if (!auth.checkAuth()) {
+  async created () {
+    if (await !auth.checkAuth()) {
       auth.logout()
       this.$router.push('/')
+    } else {
+      this.currentUser = await auth.getUser()
+      this.userName = this.currentUser.username
+      this.name = this.currentUser.name
+      this.userEmailMD5 = md5(this.currentUser.email)
+      await auth.updateToken(this)
     }
-    auth.updateToken(this)
   }
 }
 </script>

@@ -9,7 +9,7 @@
             <button class="btn btn-primary" @click="showLogin = !showLogin" v-else>Auth me!</button>
           </div>
           <div v-else>
-            <form @submit.prevent>
+            <form @submit.prevent @change="changed($event)">
               <div class="form-group">
                 <label for="emailInput">Email</label>
                 <input type="email" class="form-control" id="emailInput" required placeholder="email@example.com" v-model="credentials.email">
@@ -19,7 +19,7 @@
                 <input type="password" class="form-control" id="passwordInput" required placeholder="password" v-model="credentials.password">
               </div>
               <button class="btn btn-primary" @click="showLogin = !showLogin">X</button>
-              <input class="btn btn-success" type="submit" @click="submit()" value="Auth!"/>
+              <button class="btn btn-success" type="submit" :disabled="!authButton" @click="submit()">Auth!</button>
             </form>
           </div>
         </div>
@@ -39,18 +39,25 @@ export default {
         email: '',
         password: ''
       },
-      showLogin: false
+      authButton: false,
+      showLogin: false,
+      authenticated: false
     }
   },
   methods: {
     submit () {
       auth.login(this, this.credentials, 'panel/ryt')
+    },
+    changed (e) {
+      if (this.credentials.email && this.credentials.password) {
+        this.authButton = true
+      } else {
+        this.authButton = false
+      }
     }
   },
-  computed: {
-    authenticated () {
-      return auth.checkAuth()
-    }
+  async created () {
+    this.authenticated = await auth.checkAuth()
   }
 }
 </script>

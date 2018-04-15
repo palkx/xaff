@@ -66,16 +66,26 @@ export default {
       users: null,
       limit: 15,
       Pages: 0,
-      pagination: false
+      pagination: false,
+      currentUser: ''
     }
   },
   methods: {
     changePage () {
       this.getUsers()
     },
-    uDelete (i, id) {
-      this.$http.delete(this.apiEndpoint + '/users/id/' + id, { headers: auth.getAuthHeader() }).then((data, err) => {
-        if (!err) {
+    async uDelete (i, id) {
+      try {
+        const response = await this.$http.delete(this.apiEndpoint + '/users/id/' + id, { headers: await auth.getAuthHeader() })
+        if (response.status === 200) {
+          this.$notify({
+            group: 'responses',
+            type: 'success',
+            'animation-type': 'velocity',
+            title: 'RandomYT',
+            text: 'User ' + id + ' deleted successfully',
+            reverse: true
+          })
           this.users.splice(i, 1)
           if (this.users.length <= 0) {
             if (this.Page > 1) {
@@ -84,37 +94,60 @@ export default {
             }
           }
         }
-      })
+      } catch (e) {
+        this.$notify({
+          group: 'responses',
+          type: 'error',
+          'animation-type': 'velocity',
+          title: 'Users',
+          text: 'Can`t delete user',
+          reverse: true
+        })
+      }
     },
-    getUsers () {
-      this.$http.get(this.apiEndpoint + '/users?limit=' + this.limit + '&page=' + this.Page, { headers: auth.getAuthHeader() }).then((data, err) => {
-        if (!err) {
-          this.users = data.body
-        }
-      })
+    async getUsers () {
+      try {
+        const response = await this.$http.get(this.apiEndpoint + '/users?limit=' + this.limit + '&page=' + this.Page, { headers: await auth.getAuthHeader() })
+        this.users = response.body
+      } catch (e) {
+        this.$notify({
+          group: 'responses',
+          type: 'error',
+          'animation-type': 'velocity',
+          title: 'Users',
+          text: 'Undefined error',
+          reverse: true
+        })
+      }
     }
   },
   computed: {
-    currentUser () {
-      return auth.getUser()
-    },
     Page () {
       return Number(this.$route.query.page || 1)
     }
   },
-  created () {
-    this.$http.get(this.apiEndpoint + '/users/count', { headers: auth.getAuthHeader() }).then((data, err) => {
-      if (!err) {
-        if (data.body >= this.limit) {
-          this.pagination = true
-          this.Pages = Math.floor(Number(data.body - 1) / this.limit) + 1
-        }
+  async created () {
+    try {
+      this.currentUser = await auth.getUser()
+      const response = await this.$http.get(this.apiEndpoint + '/users/count', { headers: await auth.getAuthHeader() })
+      if (response.body >= this.limit) {
+        this.pagination = true
+        this.Pages = Math.floor(Number(response.body - 1) / this.limit) + 1
       }
+    } catch (e) {
+      this.$notify({
+        group: 'responses',
+        type: 'error',
+        'animation-type': 'velocity',
+        title: 'Users',
+        text: 'Undefined error',
+        reverse: true
+      })
       if (this.Page - 1 > this.Pages) {
         this.$router.push('/panel/users')
       }
-    })
-    this.getUsers()
+    }
+    await this.getUsers()
   }
 }
 </script>
