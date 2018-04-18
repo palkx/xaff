@@ -1,5 +1,7 @@
 <template>
-  <div id="ryv" class="container-fluid">
+  <div
+    id="ryv"
+    class="container-fluid">
     <div class="row">
       <div class="col-sm-11">
         <section class="content-header pull-left">
@@ -7,7 +9,9 @@
         </section>
       </div>
       <div class="col-sm-1">
-        <router-link :to="'ryt/add'" class="btn btn-success">Add</router-link>
+        <router-link
+          :to="'ryt/add'"
+          class="btn btn-success">Add</router-link>
       </div>
     </div>
     <div class="row">
@@ -30,7 +34,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(video, index) in ytVideos" :key="index">
+              <tr
+                v-for="(video, index) in ytVideos"
+                :key="index">
                 <td>{{ (index + 1) + ((Page - 1) * limit) }}</td>
                 <td :title="video.friendlyName">{{ (video.friendlyName == null ? 'NONE' : video.friendlyName) }}</td>
                 <td>{{ video.videoId }}</td>
@@ -42,24 +48,66 @@
                 <td>{{ video.reports }}</td>
                 <td>{{ video.changedBy == null ? 'UFO' : video.changedBy }}</td>
                 <td>
-                  <router-link :to="'ryt/edit/' + video._id" class="btn btn-warning">Edit</router-link>
-                  <button class="btn btn-danger" @click="vDelete(index, video._id)">Delete</button>
+                  <router-link
+                    :to="'ryt/edit/' + video._id"
+                    class="btn btn-warning">Edit</router-link>
+                  <button
+                    class="btn btn-danger"
+                    @click="vDelete(index, video._id)">Delete</button>
                 </td>
               </tr>
             </tbody>
           </table>
         </section>
-        <nav v-if="pagination" aria-label="Navigation">
-          <ul class="pagination justify-content-center" @click="changePage()">
-            <li class="page-item" v-if="Page > 1"><router-link :to="'ryt?page=' + (Page - 1)"  class="page-link">Previous</router-link></li>
-            <li class="page-item" v-if="(Page - 3) >= 1"><router-link :to="'ryt?page=' + (Page - 3)" class="page-link">{{ Page - 3 }}</router-link></li>
-            <li class="page-item" v-if="(Page - 2) >= 1"><router-link :to="'ryt?page=' + (Page - 2)" class="page-link">{{ Page - 2 }}</router-link></li>
-            <li class="page-item" v-if="(Page - 1) >= 1"><router-link :to="'ryt?page=' + (Page - 1)" class="page-link">{{ Page - 1 }}</router-link></li>
-            <li class="page-item active"><router-link :to="'ryt?page=' + Page" class="page-link">{{ Page }}</router-link></li>
-            <li class="page-item" v-if="(Page + 1) <= Pages"><router-link :to="'ryt?page=' + (Page + 1)" class="page-link">{{ Page + 1 }}</router-link></li>
-            <li class="page-item" v-if="(Page + 2) <= Pages"><router-link :to="'ryt?page=' + (Page + 2)" class="page-link">{{ Page + 2 }}</router-link></li>
-            <li class="page-item" v-if="(Page + 3) <= Pages"><router-link :to="'ryt?page=' + (Page + 3)" class="page-link">{{ Page + 3 }}</router-link></li>
-            <li class="page-item" v-if="Page < Pages"><router-link :to="'ryt?page=' + (Page + 1)" class="page-link">Next</router-link></li>
+        <nav
+          v-if="pagination"
+          aria-label="Navigation">
+          <ul
+            class="pagination justify-content-center"
+            @click="changePage()">
+            <li
+              class="page-item"
+              v-if="Page > 1"><router-link
+                :to="'ryt?page=' + (Page - 1)"
+                class="page-link">Previous</router-link></li>
+            <li
+              class="page-item"
+              v-if="(Page - 3) >= 1"><router-link
+                :to="'ryt?page=' + (Page - 3)"
+                class="page-link">{{ Page - 3 }}</router-link></li>
+            <li
+              class="page-item"
+              v-if="(Page - 2) >= 1"><router-link
+                :to="'ryt?page=' + (Page - 2)"
+                class="page-link">{{ Page - 2 }}</router-link></li>
+            <li
+              class="page-item"
+              v-if="(Page - 1) >= 1"><router-link
+                :to="'ryt?page=' + (Page - 1)"
+                class="page-link">{{ Page - 1 }}</router-link></li>
+            <li class="page-item active"><router-link
+              :to="'ryt?page=' + Page"
+              class="page-link">{{ Page }}</router-link></li>
+            <li
+              class="page-item"
+              v-if="(Page + 1) <= Pages"><router-link
+                :to="'ryt?page=' + (Page + 1)"
+                class="page-link">{{ Page + 1 }}</router-link></li>
+            <li
+              class="page-item"
+              v-if="(Page + 2) <= Pages"><router-link
+                :to="'ryt?page=' + (Page + 2)"
+                class="page-link">{{ Page + 2 }}</router-link></li>
+            <li
+              class="page-item"
+              v-if="(Page + 3) <= Pages"><router-link
+                :to="'ryt?page=' + (Page + 3)"
+                class="page-link">{{ Page + 3 }}</router-link></li>
+            <li
+              class="page-item"
+              v-if="Page < Pages"><router-link
+                :to="'ryt?page=' + (Page + 1)"
+                class="page-link">Next</router-link></li>
           </ul>
         </nav>
       </div>
@@ -68,96 +116,96 @@
 </template>
 
 <script>
-import auth from '../../../../auth'
+import auth from '../../../../auth';
 
 export default {
-  data () {
+  data() {
     return {
       ytVideos: null,
       limit: 15,
       Pages: 0,
       pagination: false
-    }
+    };
   },
   methods: {
-    async changePage () {
-      await this.getVideos()
+    async changePage() {
+      await this.getVideos();
     },
-    async vDelete (i, id) {
+    async vDelete(i, id) {
       try {
-        const response = await this.$http.delete(this.apiEndpoint + '/yrvs/id/' + id, { headers: await auth.getAuthHeader() })
+        const response = await this.$http.delete(`${this.apiEndpoint}/yrvs/id/${id}`, { headers: await auth.getAuthHeader() });
         if (response.status === 200) {
           this.$notify({
-            group: 'responses',
-            type: 'success',
+            'group': 'responses',
+            'type': 'success',
             'animation-type': 'velocity',
-            title: 'RandomYT',
-            text: 'Video ' + id + ' deleted successfully',
-            reverse: true
-          })
-          this.ytVideos.splice(i, 1)
+            'title': 'RandomYT',
+            'text': `Video ${id} deleted successfully`,
+            'reverse': true
+          });
+          this.ytVideos.splice(i, 1);
           if (this.ytVideos.length <= 0) {
             if (this.Page > 1) {
-              this.$router.push('/panel/ryt?page=' + (this.Page - 1))
-              this.changePage()
+              this.$router.push(`/panel/ryt?page=${this.Page - 1}`);
+              this.changePage();
             }
           }
         }
       } catch (e) {
         this.$notify({
-          group: 'responses',
-          type: 'error',
+          'group': 'responses',
+          'type': 'error',
           'animation-type': 'velocity',
-          title: 'RandomYT',
-          text: 'Can`t delete video',
-          reverse: true
-        })
+          'title': 'RandomYT',
+          'text': 'Can`t delete video',
+          'reverse': true
+        });
       }
     },
-    async getVideos () {
+    async getVideos() {
       try {
-        const videos = await this.$http.get(this.apiEndpoint + '/yrvs?limit=' + this.limit + '&page=' + this.Page)
-        this.ytVideos = videos.body
+        const videos = await this.$http.get(`${this.apiEndpoint}/yrvs?limit=${this.limit}&page=${this.Page}`);
+        this.ytVideos = videos.body;
       } catch (e) {
         this.$notify({
-          group: 'responses',
-          type: 'error',
+          'group': 'responses',
+          'type': 'error',
           'animation-type': 'velocity',
-          title: 'RandomYT',
-          text: 'Undefined error',
-          reverse: true
-        })
+          'title': 'RandomYT',
+          'text': 'Undefined error',
+          'reverse': true
+        });
       }
     }
   },
   computed: {
-    Page () {
-      return Number(this.$route.query.page || 1)
+    Page() {
+      return Number(this.$route.query.page || 1);
     }
   },
-  async created () {
+  async created() {
     try {
-      const response = await this.$http.get(this.apiEndpoint + '/yrvs/count')
+      const response = await this.$http.get(`${this.apiEndpoint}/yrvs/count`);
       if (response.body >= this.limit) {
-        this.pagination = true
-        this.Pages = Math.floor(Number(response.body - 1) / this.limit) + 1
+        this.pagination = true;
+        this.Pages = Math.floor(Number(response.body - 1) / this.limit) + 1;
       }
     } catch (e) {
       this.$notify({
-        group: 'responses',
-        type: 'error',
+        'group': 'responses',
+        'type': 'error',
         'animation-type': 'velocity',
-        title: 'RandomYT',
-        text: 'Undefined error',
-        reverse: true
-      })
+        'title': 'RandomYT',
+        'text': 'Undefined error',
+        'reverse': true
+      });
       if (this.Page - 1 > this.Pages) {
-        this.$router.push('/panel/ryt')
+        this.$router.push('/panel/ryt');
       }
     }
-    await this.getVideos()
+    await this.getVideos();
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

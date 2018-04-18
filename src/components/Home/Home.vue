@@ -5,21 +5,47 @@
         <div class="col-sm-3 hero">
           <div v-if="!showLogin">
             Hello, you visited <b>{{ siteTitle }}</b><br>
-            <button class="btn btn-primary" @click="$router.push('panel/ryt')" v-if="authenticated">Go to Panel</button>
-            <button class="btn btn-primary" @click="showLogin = !showLogin" v-else>Auth me!</button>
+            <button
+              class="btn btn-primary"
+              @click="$router.push('panel/ryt')"
+              v-if="authenticated">Go to Panel</button>
+            <button
+              class="btn btn-primary"
+              @click="showLogin = !showLogin"
+              v-else>Auth me!</button>
           </div>
           <div v-else>
-            <form @submit.prevent @change="changed($event)">
+            <form
+              @submit.prevent
+              @change="changed()">
               <div class="form-group">
                 <label for="emailInput">Email</label>
-                <input type="email" class="form-control" id="emailInput" required placeholder="email@example.com" v-model="credentials.email">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="emailInput"
+                  required
+                  placeholder="email@example.com"
+                  v-model="credentials.email">
               </div>
               <div class="form-group">
                 <label for="passwordInput">Password</label>
-                <input type="password" class="form-control" id="passwordInput" required placeholder="password" v-model="credentials.password">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="passwordInput"
+                  required
+                  placeholder="password"
+                  v-model="credentials.password">
               </div>
-              <button class="btn btn-primary" @click="showLogin = !showLogin">X</button>
-              <button class="btn btn-success" type="submit" :disabled="!authButton" @click="submit()">Auth!</button>
+              <button
+                class="btn btn-primary"
+                @click="showLogin = !showLogin">X</button>
+              <button
+                class="btn btn-success"
+                type="submit"
+                :disabled="!authButton"
+                @click="submit()">Auth!</button>
             </form>
           </div>
         </div>
@@ -29,10 +55,10 @@
 </template>
 
 <script>
-import auth from '../../auth'
+import auth from '../../auth';
 
 export default {
-  data () {
+  data() {
     return {
       siteTitle: 'XaFF',
       credentials: {
@@ -42,24 +68,24 @@ export default {
       authButton: false,
       showLogin: false,
       authenticated: false
-    }
+    };
   },
   methods: {
-    submit () {
-      auth.login(this, this.credentials, 'panel/ryt')
+    submit() {
+      auth.login(this, this.credentials, 'panel/ryt');
     },
-    changed (e) {
+    changed() {
       if (this.credentials.email && this.credentials.password) {
-        this.authButton = true
+        this.authButton = true;
       } else {
-        this.authButton = false
+        this.authButton = false;
       }
     }
   },
-  async created () {
-    this.authenticated = await auth.checkAuth()
+  async created() {
+    this.authenticated = await auth.checkAuth();
   }
-}
+};
 </script>
 
 <style lang="scss">

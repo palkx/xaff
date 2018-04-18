@@ -1,21 +1,28 @@
 <template>
   <div id="panel">
     <header class="header">
-      <a href="/panel/users" class="logo">
-        <span class="logo-mini" style="display: none;">
+      <a
+        href="/panel/users"
+        class="logo">
+        <span
+          class="logo-mini"
+          style="display: none;">
           <b>X</b>
         </span>
         <span class="logo-lg">
           <b>XaFF</b>
         </span>
       </a>
-      <nav class="navbar navbar-static-top"></nav>
+      <nav class="navbar navbar-static-top"/>
     </header>
     <aside class="sidebar">
       <section class="asidebar">
         <div class="user-panel">
           <div class="pull-left image">
-            <img :src="'//gravatar.com/avatar/' + userEmailMD5 + '?s=200'" alt="User Image" class="img-circle">
+            <img
+              :src="'//gravatar.com/avatar/' + userEmailMD5 + '?s=200'"
+              alt="User Image"
+              class="img-circle">
           </div>
           <div class="pull-left info">
             <p>{{ name || userName }}</p>
@@ -23,9 +30,16 @@
         </div>
         <ul class="sidebar-menu">
           <li class="header">ADMINISTRATION</li>
-          <router-link to="/panel/users" class="item">Users</router-link>
-          <router-link to="/panel/ryt" class="item">Random YT</router-link>
-          <a href="#" class="item" @click="logout()">Logout</a>
+          <router-link
+            to="/panel/users"
+            class="item">Users</router-link>
+          <router-link
+            to="/panel/ryt"
+            class="item">Random YT</router-link>
+          <a
+            href="#"
+            class="item"
+            @click="logout()">Logout</a>
         </ul>
       </section>
     </aside>
@@ -42,44 +56,44 @@
 </template>
 
 <script>
-import auth from '../../auth'
-import md5 from 'md5'
-import { version } from '../../../package.json'
+import auth from '../../auth';
+import md5 from 'md5';
+import { version } from '../../../package.json';
 
 export default {
-  data () {
+  data() {
     return {
       sidePanel: true,
       userName: '',
       name: '',
       userEmailMD5: '',
       currentUser: ''
-    }
+    };
   },
   methods: {
-    logout () {
-      auth.logout()
-      this.$router.push('/')
+    logout() {
+      auth.logout();
+      this.$router.push('/');
     }
   },
   computed: {
-    appVer () {
-      return version
+    appVer() {
+      return version;
     }
   },
-  async created () {
+  async created() {
     if (await !auth.checkAuth()) {
-      auth.logout()
-      this.$router.push('/')
+      auth.logout();
+      this.$router.push('/');
     } else {
-      this.currentUser = await auth.getUser()
-      this.userName = this.currentUser.username
-      this.name = this.currentUser.name
-      this.userEmailMD5 = md5(this.currentUser.email)
-      await auth.updateToken(this)
+      this.currentUser = await auth.getUser();
+      this.userName = this.currentUser.username;
+      this.name = this.currentUser.name;
+      this.userEmailMD5 = md5(this.currentUser.email);
+      await auth.updateToken(this);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

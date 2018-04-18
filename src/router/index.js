@@ -1,25 +1,25 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Resource from 'vue-resource'
-import BootstrapVue from 'bootstrap-vue'
-import Notification from 'vue-notification'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Resource from 'vue-resource';
+import BootstrapVue from 'bootstrap-vue';
+import Notification from 'vue-notification';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 
-import Home from '@/components/Home/Home'
+import Home from '@/components/Home/Home';
 
-import Panel from '@/components/Panel/Panel'
-import Users from '@/components/Panel/Views/Users/Users'
-import UsersAdd from '@/components/Panel/Views/Users/Add'
-import UsersEdit from '@/components/Panel/Views/Users/Edit'
-import RandomYT from '@/components/Panel/Views/RandomYT/RandomYT'
-import RandomYTAdd from '@/components/Panel/Views/RandomYT/Add'
-import RandomYTEdit from '@/components/Panel/Views/RandomYT/Edit'
+import Panel from '@/components/Panel/Panel';
+import Users from '@/components/Panel/Views/Users/Users';
+import UsersAdd from '@/components/Panel/Views/Users/Add';
+import UsersEdit from '@/components/Panel/Views/Users/Edit';
+import RandomYT from '@/components/Panel/Views/RandomYT/RandomYT';
+import RandomYTAdd from '@/components/Panel/Views/RandomYT/Add';
+import RandomYTEdit from '@/components/Panel/Views/RandomYT/Edit';
 
-Vue.use(Router)
-Vue.use(Resource)
-Vue.use(BootstrapVue)
-Vue.use(Notification)
+Vue.use(Router);
+Vue.use(Resource);
+Vue.use(BootstrapVue);
+Vue.use(Notification);
 
 export default new Router({
   mode: 'history',
@@ -27,7 +27,8 @@ export default new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: [
     { path: '/', name: 'Home', component: Home },
-    { path: '/panel',
+    {
+      path: '/panel',
       name: 'Panel',
       component: Panel,
       children: [
@@ -37,6 +38,7 @@ export default new Router({
         { path: 'ryt', name: 'Random YT', component: RandomYT },
         { path: 'ryt/add', name: 'Add video', component: RandomYTAdd },
         { path: 'ryt/edit/:id', name: 'Edit video', component: RandomYTEdit }
-      ]}
+      ]
+    }
   ]
-})
+});
