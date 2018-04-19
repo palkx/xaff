@@ -5,26 +5,60 @@
         <form @submit.prevent>
           <div class="form-group">
             <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" required placeholder="Kirill S." v-model="user.name">
+            <input
+              type="text"
+              class="form-control"
+              id="nameInput"
+              required
+              placeholder="Kirill S."
+              v-model="user.name">
           </div>
           <div class="form-group">
             <label for="usernameInput">Username</label>
-            <input type="text" class="form-control" id="usernameInput" required placeholder="iSm1le" v-model="user.username">
+            <input
+              type="text"
+              class="form-control"
+              id="usernameInput"
+              required
+              placeholder="iSm1le"
+              v-model="user.username">
           </div>
           <div class="form-group">
             <label for="emailInput">Email</label>
-            <input type="email" class="form-control" id="emailInput" required placeholder="email@example.com" v-model="user.email">
+            <input
+              type="email"
+              class="form-control"
+              id="emailInput"
+              required
+              placeholder="email@example.com"
+              v-model="user.email">
           </div>
           <div class="form-group">
             <label for="rolesInput">Roles</label>
-            <input type="text" class="form-control bg-danger text-white" id="rolesInput" disabled value="Under Development">
+            <input
+              type="text"
+              class="form-control bg-danger text-white"
+              id="rolesInput"
+              disabled
+              value="Under Development">
           </div>
           <div class="form-group">
             <label for="passwordInput">Password</label>
-            <input type="password" class="form-control" id="passwordInput" required placeholder="password" v-model="user.password">
+            <input
+              type="password"
+              class="form-control"
+              id="passwordInput"
+              required
+              placeholder="password"
+              v-model="user.password">
           </div>
-          <router-link to="/panel/users" class="btn btn-primary">Go back</router-link>
-          <button type="submit" class="btn btn-success" @click="add()">Add</button>
+          <router-link
+            to="/panel/users"
+            class="btn btn-primary">Go back</router-link>
+          <button
+            type="submit"
+            class="btn btn-success"
+            @click="add()">Add</button>
         </form>
       </div>
     </div>
@@ -32,10 +66,10 @@
 </template>
 
 <script>
-import auth from '../../../../auth'
+import auth from '../../../../auth';
 
 export default {
-  data () {
+  data() {
     return {
       user: {
         name: '',
@@ -45,62 +79,62 @@ export default {
         password: '',
         currentUser: ''
       }
-    }
+    };
   },
   methods: {
-    async add () {
-      this.user.changedBy = this.currentUser.username
+    async add() {
+      this.user.changedBy = this.currentUser.username;
       try {
-        const response = await this.$http.post(this.apiEndpoint + '/users', this.user, { headers: await auth.getAuthHeader() })
+        const response = await this.$http.post(`${this.apiEndpoint}/users`, this.user, { headers: await auth.getAuthHeader() });
         if (response.status === 200) {
           this.$notify({
-            group: 'responses',
-            type: 'success',
+            'group': 'responses',
+            'type': 'success',
             'animation-type': 'velocity',
-            title: 'Users',
-            text: 'User added successfully',
-            reverse: true
-          })
-          this.$router.push('/panel/users')
+            'title': 'Users',
+            'text': 'User added successfully',
+            'reverse': true
+          });
+          this.$router.push('/panel/users');
         }
       } catch (e) {
         switch (e.status) {
-          case 400:
-            this.$notify({
-              group: 'responses',
-              type: 'error',
-              'animation-type': 'velocity',
-              title: 'Users',
-              text: 'Error when adding a user',
-              reverse: true
-            })
-            break
-          case 401:
-            this.$notify({
-              group: 'responses',
-              type: 'error',
-              'animation-type': 'velocity',
-              title: 'Users',
-              text: 'User already existing',
-              reverse: true
-            })
-            break
-          default:
-            this.$notify({
-              group: 'responses',
-              type: 'error',
-              'animation-type': 'velocity',
-              title: 'Users',
-              text: 'Undefined error',
-              reverse: true
-            })
-            break
+        case 400:
+          this.$notify({
+            'group': 'responses',
+            'type': 'error',
+            'animation-type': 'velocity',
+            'title': 'Users',
+            'text': 'Error when adding a user',
+            'reverse': true
+          });
+          break;
+        case 401:
+          this.$notify({
+            'group': 'responses',
+            'type': 'error',
+            'animation-type': 'velocity',
+            'title': 'Users',
+            'text': 'User already existing',
+            'reverse': true
+          });
+          break;
+        default:
+          this.$notify({
+            'group': 'responses',
+            'type': 'error',
+            'animation-type': 'velocity',
+            'title': 'Users',
+            'text': 'Undefined error',
+            'reverse': true
+          });
+          break;
         }
       }
     }
   },
-  async created () {
-    this.currentUser = await auth.getUser()
+  async created() {
+    this.currentUser = await auth.getUser();
   }
-}
+};
 </script>
