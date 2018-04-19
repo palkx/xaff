@@ -26,9 +26,7 @@
                 <th scope="col">Views</th>
                 <th scope="col">Starting at</th>
                 <th scope="col">Ending at</th>
-                <th scope="col">Likes</th>
-                <th scope="col">Dislikes</th>
-                <th scope="col">Reports</th>
+                <th scope="col">Likes/Dislikes/Reports</th>
                 <th scope="col">Changed by</th>
                 <th scope="col">Actions</th>
               </tr>
@@ -42,18 +40,28 @@
                 <td>{{ video.videoId }}</td>
                 <td>{{ video.views }}</td>
                 <td>{{ video.start == 0 ? 'At video start' : video.start }}</td>
-                <td>{{ video.end == null ? 'At video end' : video.end }}</td>
-                <td>{{ video.likes }}</td>
-                <td>{{ video.dislikes }}</td>
-                <td>{{ video.reports }}</td>
-                <td>{{ video.changedBy == null ? 'UFO' : video.changedBy }}</td>
+                <td>{{ video.end == null || 0 ? 'At video end' : video.end }}</td>
+                <td>{{ video.likes + '/' + video.dislikes + '/' + video.reports }}</td>
+                <td :title="video.updated">{{ video.changedBy == null ? 'UFO' : video.changedBy }}</td>
                 <td>
                   <router-link
                     :to="'ryt/edit/' + video._id"
-                    class="btn btn-warning">Edit</router-link>
+                    class="btn btn-warning">Edit
+                  </router-link>
+                  <button
+                    v-if="video.disabled"
+                    class="btn btn-success"
+                    @click="toggleShow(video, index)">Enable
+                  </button>
+                  <button
+                    v-else
+                    class="btn btn-primary"
+                    @click="toggleShow(video, index)">Disable
+                  </button>
                   <button
                     class="btn btn-danger"
-                    @click="vDelete(index, video._id)">Delete</button>
+                    @click="vDelete(index, video._id)">Delete
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -124,7 +132,8 @@ export default {
       ytVideos: null,
       limit: 15,
       Pages: 0,
-      pagination: false
+      pagination: false,
+      currentUser: ''
     };
   },
   methods: {
@@ -162,6 +171,36 @@ export default {
         });
       }
     },
+    async toggleShow(video, index) {
+      try {
+        video.disabled = !video.disabled;
+        video.changedBy = this.currentUser.username;
+        const response = await this.$http.put(`${this.apiEndpoint}/yrvs/id/${video._id}`, video, { headers: await auth.getAuthHeader() });
+        console.log(response.body);
+        if (response.status === 200) {
+          this.$notify({
+            'group': 'responses',
+            'type': 'success',
+            'animation-type': 'velocity',
+            'title': 'RandomYT',
+            'text': `Video ${video.videoId} was ${video.disabled ? 'disabled' : 'enabled'}`,
+            'reverse': true
+          });
+          this.ytVideos[index].disabled = video.disabled;
+        }
+      } catch (e) {
+        console.log(e);
+        this.$notify({
+          'group': 'responses',
+          'type': 'error',
+          'animation-type': 'velocity',
+          'title': 'RandomYT',
+          'text': 'Undefined error. Your video wasnt disabled',
+          'reverse': true
+        });
+        return false;
+      }
+    },
     async getVideos() {
       try {
         const videos = await this.$http.get(`${this.apiEndpoint}/yrvs?limit=${this.limit}&page=${this.Page}`);
@@ -185,6 +224,7 @@ export default {
   },
   async created() {
     try {
+      this.currentUser = await auth.getUser();
       const response = await this.$http.get(`${this.apiEndpoint}/yrvs/count`);
       if (response.body >= this.limit) {
         this.pagination = true;
@@ -209,13 +249,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+td:nth-child(9){
+  min-width: 210px;
+}
+td:nth-child(2) {
+    max-width: 400px;
+}
 td {
   text-overflow:ellipsis;
   overflow:hidden;
   white-space:nowrap;
   max-width: 200px;
 }
-
 .content {
   min-height: 250px;
   padding: 15px;
@@ -223,14 +268,12 @@ td {
   padding-left: 15px;
   padding-right: 15px;
 }
-
 .content-header {
   background: transparent;
   position: relative;
   padding: 0px 15px 0 15px;
   display: block;
 }
-
 .content-header>h1 {
   margin: 0;
   padding-left: 8px;
