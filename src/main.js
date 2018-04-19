@@ -20,6 +20,7 @@ new Vue({
 });
 
 /*
-TODO:
-Change panel css
+  TODO:
+  Change panel css
+  Add disabled checkbox to videos (add disabled: false to all existing videos)
 */

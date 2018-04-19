@@ -97,6 +97,7 @@ export default {
         this.router.push(redirect);
       }
     } catch (e) {
+      console.log(e);
       return false;
     }
   },
@@ -106,6 +107,7 @@ export default {
       const decoded = await jwt.verify(token, key);
       return decoded;
     } catch (e) {
+      console.log(e);
       return false;
     }
   },
@@ -154,14 +156,15 @@ export default {
   async updateToken(context) {
     try {
       if (await this.checkAuth()) {
-        const response = await context.$http.get(`${context.apiEndpoint}/users/updtoken`, { headers: this.getAuthHeader() });
+        const response = await context.$http.get(`${context.apiEndpoint}/users/updtoken`, { headers: await this.getAuthHeader() });
         if (await this.verify(response.body.token, jwtPublicKey)) {
-          localStorage.setItem('id_token', jwtPublicKey);
+          localStorage.setItem('id_token', response.body.token);
           this.user.authenticated = true;
           return true;
         }
       }
     } catch (e) {
+      console.log(e);
       return false;
     }
   }

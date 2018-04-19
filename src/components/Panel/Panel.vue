@@ -86,6 +86,7 @@ export default {
       auth.logout();
       this.$router.push('/');
     } else {
+      console.log('Logged in!');
       this.currentUser = await auth.getUser();
       this.userName = this.currentUser.username;
       this.name = this.currentUser.name;
