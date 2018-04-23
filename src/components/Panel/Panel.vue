@@ -1,56 +1,69 @@
 <template>
-  <div id="panel">
-    <header class="header">
-      <a
-        href="/panel/users"
-        class="logo">
-        <span
-          class="logo-mini"
-          style="display: none;">
-          <b>X</b>
-        </span>
-        <span class="logo-lg">
-          <b>XaFF</b>
-        </span>
-      </a>
-      <nav class="navbar navbar-static-top"/>
-    </header>
-    <aside class="sidebar">
-      <section class="asidebar">
-        <div class="user-panel">
-          <div class="pull-left image">
+  <div class="page-container">
+    <md-app>
+      <md-app-toolbar class="md-primary">
+        <md-button
+          class="md-icon-button"
+          @click="showNavigation = !showNavigation">
+          <md-icon>menu</md-icon>
+        </md-button>
+        <span class="md-title">XaFF</span>
+        <div class="md-toolbar-section-end">
+          <md-avatar
+            v-if="userHasGravatar"
+            class="md-avatar-icon">
             <img
-              :src="'//gravatar.com/avatar/' + userEmailMD5 + '?s=200'"
-              alt="User Image"
-              class="img-circle">
-          </div>
-          <div class="pull-left info">
-            <p>{{ name || userName }}</p>
-          </div>
+              :src="`https://gravatar.com/avatar/${this.userEmailMD5}?s=128`"
+              alt="User avatar">
+          </md-avatar>
+          <md-avatar
+            v-else
+            class="md-avatar-icon">{{ name ? name[0] : userName[0] }}</md-avatar>
+          <span class="md-title">{{ name ? name : userName }}</span>
         </div>
-        <ul class="sidebar-menu">
-          <li class="header">ADMINISTRATION</li>
-          <router-link
-            to="/panel/users"
-            class="item">Users</router-link>
-          <router-link
-            to="/panel/ryt"
-            class="item">Random YT</router-link>
-          <a
-            href="#"
-            class="item"
-            @click="logout()">Logout</a>
-        </ul>
-      </section>
-    </aside>
-    <div class="data-container">
-      <div class="content">
+      </md-app-toolbar>
+
+      <md-app-drawer
+        :md-active.sync="showNavigation"
+        md-persistent="full">
+        <md-toolbar
+          class="md-transparent"
+          md-elevation="0">
+          <span class="md-title">Navigation</span>
+        </md-toolbar>
+
+        <md-list>
+          <md-list-item to="/panel/users">
+            <md-icon>account_box</md-icon>
+            <span class="md-list-item-text">Users</span>
+          </md-list-item>
+          <md-list-item to="/panel/ryt">
+            <md-icon>home</md-icon>
+            <span class="md-list-item-text">Youtube RV</span>
+          </md-list-item>
+          <md-list-item @click="logout()">
+            <md-icon>input</md-icon>
+            <span class="md-list-item-text">Log Out</span>
+          </md-list-item>
+        </md-list>
+      </md-app-drawer>
+      <md-app-content>
         <router-view/>
+      </md-app-content>
+    </md-app>
+    <footer class="main-footer">
+      <div class="main-footer-container">
+        <div class="main-footer-section">
+          <a href="https://github.com/iSm1le/xaff/blob/production/LICENSE">License</a>
+          <a
+            href="https://github.com/iSm1le"
+            target="_blank">Made with <span class="heart">❤</span> by Mikhail K.
+          </a>
+        </div>
+        <div class="main-footer-section">
+          <b>Version</b> {{ appVer }}
+        </div>
       </div>
-    </div>
-    <footer class="mfooter">
-      <div class="pull-left"><strong>Copyright © 2018</strong> Mikhail K. All rights reserved.</div>
-      <div class="pull-right hidden-xs"><b>Version</b> {{ appVer }}</div>
     </footer>
   </div>
 </template>
@@ -67,13 +80,22 @@ export default {
       userName: '',
       name: '',
       userEmailMD5: '',
-      currentUser: ''
+      currentUser: '',
+      showNavigation: true,
+      userHasGravatar: false
     };
   },
   methods: {
     logout() {
       auth.logout();
       this.$router.push('/');
+    },
+    async userGravatar() {
+      const response = await this.$http.get(`https://en.gravatar.com/${this.userEmailMD5}.json`);
+      if ([200, 302].indexOf(response.status) > -1) {
+        return this.userHasGravatar = true;
+      }
+      return this.userHasGravatar = false;
     }
   },
   computed: {
@@ -83,212 +105,114 @@ export default {
   },
   async created() {
     if (await !auth.checkAuth()) {
-      auth.logout();
-      this.$router.push('/');
+      this.logout();
     } else {
       this.currentUser = await auth.getUser();
       this.userName = this.currentUser.username;
       this.name = this.currentUser.name;
       this.userEmailMD5 = md5(this.currentUser.email);
-      await auth.updateToken(this);
+      this.userGravatar();
+      auth.updateToken(this);
     }
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
-@media (max-width: 767px) {
-  .hidden-xs {
-      display: none!important;
+.page-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .md-app {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .md-app-toolbar {
+      .end {
+        flex: 1;
+        justify-content: flex-end;
+      }
+      .md-avatar {
+        margin-right: 0;
+      }
+    }
+
+    .md-progress-bar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .md-drawer {
+      width: 230px;
+      max-width: calc(100vw - 125px);
+    }
+
+    .md-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+
   }
-}
 
-.content {
-  min-height: 250px;
-  padding: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-}
+  .main-footer {
+    height: 96px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 4;
+    background-color: #eee;
 
-.mfooter {
-  display: block;
-  background: #fff;
-  padding: 15px;
-  color: #444;
-  height: 40px;
-  border-top: 1px solid #d2d6de;
-  -webkit-transition: -webkit-transform .3s ease-in-out,margin .3s ease-in-out;
-  -moz-transition: -moz-transform .3s ease-in-out,margin .3s ease-in-out;
-  -o-transition: -o-transform .3s ease-in-out,margin .3s ease-in-out;
-  transition: transform .3s ease-in-out,margin .3s ease-in-out;
-  margin-left: 230px;
-  z-index: 820;
-}
+    .main-footer-container {
+      max-width: 100%;
+      height: 100%;
+      display: -webkit-box;
+      display: flex;
+      -webkit-box-align: center;
+      align-items: center;
+      -webkit-box-pack: justify;
+      justify-content: space-between;
+      transition: .3s cubic-bezier(.4,0,.2,1);
+      transition-property: max-width;
 
-.data-container {
-  min-height: 960px;
-  background-color: #ecf0f5;
-  z-index: 800;
-  -webkit-transition: -webkit-transform .3s ease-in-out,margin .3s ease-in-out;
-  -moz-transition: -moz-transform .3s ease-in-out,margin .3s ease-in-out;
-  -o-transition: -o-transform .3s ease-in-out,margin .3s ease-in-out;
-  transition: transform .3s ease-in-out,margin .3s ease-in-out;
-  margin-left: 230px;
-}
+      a {
+        color: #000;
+      }
 
-.item.open {
-  background-color: #32383c;
-}
+      a:hover {
+        text-decoration: none;
+        border-bottom: 1px solid currentColor;
 
-.item:hover {
-  text-decoration: none;
-}
+        span.heart {
+          color: #d32f2f;
+          transform: scale(1.4);
+        }
+      }
 
-.item {
-  color: white;
-  padding: 8px;
-  text-decoration: none;
-  display: block;
-  transition: 0.3s;
-  background-color: #282e31;
-}
+      .main-footer-section {
+        position: relative;
 
-.sidebar-menu .header {
-  color: #4b646f;
-  background: #1a2226;
-  overflow: hidden;
-  text-overflow: clip;
-  white-space: nowrap;
-  padding: 10px 25px 10px 15px;
-  font-size: 12px;
-  position: relative;
-  margin: 0;
-}
+        a + a {
+          margin-left: 32px;
+        }
 
-.sidebar-menu {
-  white-space: nowrap;
-  overflow: hidden;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+        span.heart {
+          color: #f44336;
+          display: inline-block;
+          transition: .3s cubic-bezier(.4,0,.2,1);
+        }
 
-.user-panel>.info {
-  color: #fff;
-  padding: 5px 5px 5px 15px;
-  line-height: 1;
-  position: absolute;
-  left: 55px;
-}
+      }
+    }
+  }
 
-img {
-  vertical-align: middle;
-  border: 0;
-}
-
-.img-circle {
-  border-radius: 50%;
-}
-
-.user-panel>.image>img {
-  width: 100%;
-  max-width: 45px;
-  height: auto;
-}
-
-.pull-right {
-  float: right!important;
-}
-
-.pull-left {
-  float: left!important;
-}
-
-.sidebar .user-panel {
-  white-space: nowrap;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  padding: 10px;
-}
-
-section.asidebar {
-  height: auto;
-  padding-bottom: 10px;
-  display: block;
-}
-
-aside.sidebar {
-  display: block;
-  background-color: #28373e;
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding-top: 50px;
-  min-height: 100%;
-  width: 230px;
-  z-index: 810;
-  -webkit-transition: -webkit-transform .3s ease-in-out,width .3s ease-in-out;
-  -moz-transition: -moz-transform .3s ease-in-out,width .3s ease-in-out;
-  -o-transition: -o-transform .3s ease-in-out,width .3s ease-in-out;
-  transition: transform .3s ease-in-out,width .3s ease-in-out;
-}
-
-.navbar {
-  background-color: #3c8dbc;
-  -webkit-transition: margin-left .3s ease-in-out;
-  -o-transition: margin-left .3s ease-in-out;
-  transition: margin-left .3s ease-in-out;
-  margin-bottom: 0;
-  margin-left: 230px;
-  border: none;
-  min-height: 50px;
-  border-radius: 0;
-}
-
-header.header a.logo span.logo-lg {
-  display: block;
-}
-
-header.header a.logo {
-  text-decoration: none;
-  background-color: #367fa9;
-  -webkit-transition: width .3s ease-in-out;
-  -o-transition: width .3s ease-in-out;
-  transition: width .3s ease-in-out;
-  display: block;
-  float: left;
-  height: 50px;
-  font-size: 20px;
-  line-height: 50px;
-  text-align: center;
-  width: 230px;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  padding: 0 15px;
-  font-weight: 300;
-  overflow: hidden;
-  color: #fff;
-  border-bottom: 0 solid transparent;
-  z-index: 998;
-}
-
-header.header {
-  position: relative;
-  max-height: 100px;
-  z-index: 999;
-}
-
-#panel {
-  width: 100%;
-  height: auto;
-  min-height: 100%;
-  position: relative;
-  overflow-x: hidden;
-  overflow-y: auto;
-  background-color: #222d32;
 }
 
 </style>

@@ -1,13 +1,17 @@
+/* Core */
 import Vue from 'vue';
 import Router from 'vue-router';
 import Resource from 'vue-resource';
-import BootstrapVue from 'bootstrap-vue';
-import Notification from 'vue-notification';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
+import Notification from 'vue-notification'; // Notifications
+import VueMaterial from 'vue-material'; // Material interface
+import 'vue-material/dist/vue-material.min.css'; // Material css
+import 'vue-material/dist/theme/default.css'; // Default material theme
 
+/* Views */
 import Home from '@/components/Home/Home';
+import Login from '@/components/Home/Login';
 
+/* Panel */
 import Panel from '@/components/Panel/Panel';
 import Users from '@/components/Panel/Views/Users/Users';
 import UsersAdd from '@/components/Panel/Views/Users/Add';
@@ -18,15 +22,15 @@ import RandomYTEdit from '@/components/Panel/Views/RandomYT/Edit';
 
 Vue.use(Router);
 Vue.use(Resource);
-Vue.use(BootstrapVue);
 Vue.use(Notification);
+Vue.use(VueMaterial);
 
 export default new Router({
   mode: 'history',
-  linkActiveClass: 'open',
   scrollBehavior: () => ({ y: 0 }),
   routes: [
     { path: '/', name: 'Home', component: Home },
+    { path: '/login', name: 'Login page', component: Login },
     {
       path: '/panel',
       name: 'Panel',
