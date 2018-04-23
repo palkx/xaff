@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <router-view/>
     <notifications
       group="responses"
       position="bottom right" />
+    <router-view/>
   </div>
 </template>
 
@@ -15,22 +15,16 @@ export default {
 
 <style lang="scss">
 
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,400i|Material+Icons'); // Roboto font
+
 * {
   box-sizing: border-box;
-  font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
-  font-weight: 400;
+  font-family: 'Roboto', sans-serif;
 }
 
 html, body, #app {
   width: 100%;
   height: 100%;
   margin: auto;
-}
-
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
 }
 </style>

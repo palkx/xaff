@@ -1,89 +1,145 @@
 <template>
-  <div class="container-fluid">
-    <div class="row justify-content-center">
-      <div class="col-sm-4">
-        <form
-          @submit.prevent
-          @change="changed()">
-          <div class="form-group">
-            <label for="nameInput">Name</label>
-            <input
+  <div class="page-container">
+    <form
+      novalidate
+      class="md-layout"
+      @submit.prevent="validate()"
+      @change="changed()">
+      <md-card class="md-layout-item md-with-hover md-size-75 md-small-size-100">
+
+        <md-card-header>
+          <div class="md-title">Editing user {{ form.name ? form.name : form.username }}</div>
+        </md-card-header>
+
+        <md-card-content>
+          <md-field :class="getValidationClass('name')">
+            <label for="name">User Name</label>
+            <md-input
               type="text"
-              class="form-control"
-              id="nameInput"
-              required
-              placeholder="Kirill S."
-              v-model="user.name">
-          </div>
-          <div class="form-group">
-            <label for="usernameInput">Username</label>
-            <input
+              name="name"
+              id="name"
+              v-model="form.name"
+              :disabled="loading" />
+            <span
+              class="md-error"
+              v-if="!$v.form.name.required">User name is required</span>
+            <span
+              class="md-error"
+              v-else-if="!$v.form.name.minLength">User name is too short</span>
+          </md-field>
+          <md-field :class="getValidationClass('username')">
+            <label for="username">Username</label>
+            <md-input
               type="text"
-              class="form-control"
-              id="usernameInput"
-              required
-              placeholder="iSm1le"
-              v-model="user.username">
-          </div>
-          <div class="form-group">
-            <label for="emailInput">Email</label>
-            <input
+              name="username"
+              id="username"
+              v-model="form.username"
+              :disabled="loading" />
+            <span
+              class="md-error"
+              v-if="!$v.form.username.required">Username is required</span>
+            <span
+              class="md-error"
+              v-else-if="!$v.form.username.minLength">Username is too short</span>
+          </md-field>
+          <md-field :class="getValidationClass('email')">
+            <label for="email">Email</label>
+            <md-input
               type="email"
-              class="form-control"
-              id="emailInput"
-              required
-              placeholder="email@example.com"
-              v-model="user.email">
-          </div>
-          <div class="form-group">
-            <label for="rolesInput">Roles</label>
-            <input
+              name="email"
+              id="email"
+              v-model="form.email"
+              :disabled="loading" />
+            <span
+              class="md-error"
+              v-if="!$v.form.email.required">Email is required</span>
+            <span
+              class="md-error"
+              v-else-if="!$v.form.email.email">Please input valid email</span>
+          </md-field>
+          <md-field :class="getValidationClass('roles')">
+            <label for="roles">Roles (IN DEV)</label>
+            <md-input
               type="text"
-              class="form-control bg-danger text-white"
-              id="rolesInput"
-              disabled
-              value="Under Development">
-          </div>
-          <div class="form-group">
-            <label for="passwordInput">Password</label>
-            <input
+              name="roles"
+              id="roles"
+              v-model="form.end"
+              :disabled="true" />
+          </md-field>
+          <md-field :class="getValidationClass('password')">
+            <label for="password">Password</label>
+            <md-input
+              @change="passwordChanged = true"
               type="password"
-              class="form-control"
-              id="passwordInput"
-              placeholder="password"
-              v-model="password">
-          </div>
-          <router-link
-            to="/panel/users"
-            class="btn btn-primary">Go back</router-link>
-          <button
+              name="password"
+              id="password"
+              v-model="form.password"
+              :disabled="loading" />
+          </md-field>
+        </md-card-content>
+
+        <md-progress-bar
+          md-mode="indeterminate"
+          v-if="loading" />
+
+        <md-card-actions>
+          <md-button to="/panel/users">Cancel</md-button>
+          <md-button
             type="submit"
-            class="btn btn-success"
-            :disabled="!isChanged"
-            @click="edit()">Edit</button>
-        </form>
-      </div>
-    </div>
+            class="md-primary"
+            :disabled="loading || !isChanged">Edit</md-button>
+        </md-card-actions>
+      </md-card>
+    </form>
   </div>
 </template>
 
 <script>
 import auth from '../../../../auth';
+import { validationMixin } from 'vuelidate';
+import {
+  required,
+  email,
+  minLength
+} from 'vuelidate/lib/validators';
 
 export default {
+  mixins: [validationMixin],
   data() {
     return {
-      user: {},
+      form: {
+        name: null,
+        username: null,
+        email: null,
+        roles: null,
+        password: null
+      },
       userOld: {},
       isChanged: false,
       passwordChanged: false,
-      password: '',
-      currentUser: ''
+      currentUser: '',
+      loading: false
     };
+  },
+  validations: {
+    form: {
+      name: {
+        required,
+        minLength: minLength(3)
+      },
+      username: {
+        required,
+        minLength: minLength(5)
+      },
+      email: {
+        required,
+        email
+      }
+    }
   },
   methods: {
     changed() {
-      if (!(JSON.stringify(this.user) === this.userOld) || this.password) {
+      if (!(JSON.stringify(this.form) === this.userOld) || this.form.password) {
         this.isChanged = true;
       } else {
         this.isChanged = false;
@@ -91,13 +147,10 @@ export default {
     },
     async edit() {
       if (this.isChanged) {
-        if (this.password) {
-          this.user.password = this.password;
-          this.passwordChanged = true;
-        }
-        this.user.changedBy = this.currentUser.username;
+        this.loading = true;
+        this.form.changedBy = this.currentUser.username;
         try {
-          const response = await this.$http.put(`${this.apiEndpoint}/users/id/${this.id}`, this.user, { headers: await auth.getAuthHeader() });
+          const response = await this.$http.put(`${this.apiEndpoint}/users/id/${this.id}`, this.form, { headers: await auth.getAuthHeader() });
           if (response.status === 200) {
             this.$notify({
               'group': 'responses',
@@ -107,7 +160,8 @@ export default {
               'text': 'User edited successfully',
               'reverse': true
             });
-            if ((this.user._id === this.id) && this.passwordChanged) {
+            this.loading = false;
+            if ((this.form._id === this.id) && this.passwordChanged) {
               auth.logout();
               this.$router.push('/');
             } else {
@@ -115,6 +169,7 @@ export default {
             }
           }
         } catch (e) {
+          this.loading = false;
           this.$notify({
             'group': 'responses',
             'type': 'error',
@@ -125,6 +180,22 @@ export default {
           });
         }
       }
+    },
+    validate() {
+      this.$v.$touch();
+
+      if (!this.$v.$invalid) {
+        this.edit();
+      }
+    },
+    getValidationClass(fieldName) {
+      const field = this.$v.form[fieldName];
+
+      if (field) {
+        return {
+          'md-invalid': field.$invalid && field.$dirty
+        };
+      }
     }
   },
   computed: {
@@ -133,12 +204,15 @@ export default {
     }
   },
   async created() {
-    this.currentUser = await auth.getUser();
+    this.loading = true;
+    this.currentUser = auth.getUser();
     try {
       const response = await this.$http.get(`${this.apiEndpoint}/users/id/${this.id}`, { headers: await auth.getAuthHeader() });
-      this.user = response.body;
-      this.userOld = JSON.stringify(this.user);
+      this.form = response.body;
+      this.userOld = JSON.stringify(this.form);
+      this.loading = false;
     } catch (e) {
+      this.loading = false;
       this.$notify({
         'group': 'responses',
         'type': 'error',
@@ -151,3 +225,24 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.page-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .md-progress-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+  }
+
+  .md-card {
+    margin: auto;
+  }
+}
+</style>
+
