@@ -2,7 +2,7 @@
   <div id="app">
     <notifications
       group="responses"
-      position="bottom right" />
+      position="bottom right"/>
     <router-view/>
   </div>
 </template>
