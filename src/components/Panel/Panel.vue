@@ -81,7 +81,7 @@ export default {
       name: '',
       userEmailMD5: '',
       currentUser: '',
-      showNavigation: true,
+      showNavigation: false,
       userHasGravatar: false
     };
   },
