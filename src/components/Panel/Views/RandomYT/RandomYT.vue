@@ -29,7 +29,7 @@
         <md-table-cell>{{ video.views }}</md-table-cell>
         <md-table-cell>{{ video.start === 0 ? 'At video start' : video.start }}</md-table-cell>
         <md-table-cell>{{ video.end === null || 0 ? 'At video end' : video.end }}</md-table-cell>
-        <md-table-cell>{{ video.likes === null || 0 ? 0 : video.likes + '/' + video.dislikes === null || 0 ? 0 : video.dislikes + '/' + video.reports === null || 0 ? 0 : video.reports }}</md-table-cell>
+        <md-table-cell>{{ `${video.likes === null || 0 ? 0 : video.likes}/${video.dislikes === null || 0 ? 0 : video.dislikes}/${video.reports === null || 0 ? 0 : video.reports}` }}</md-table-cell>
         <md-table-cell :title="video.updated">{{ video.changedBy == null ? 'UFO' : video.changedBy }}</md-table-cell>
         <md-table-cell>
           <md-button
