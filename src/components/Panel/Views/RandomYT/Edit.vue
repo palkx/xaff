@@ -13,7 +13,7 @@
 
         <md-card-content>
           <md-field :class="getValidationClass('friendlyName')">
-            <label for="videoName">Video Name</label>
+            <label for="friendlyName">Video Name</label>
             <md-input
               type="text"
               name="friendlyName"
@@ -58,7 +58,7 @@
               v-else-if="!$v.form.start.max">Invalid video start time</span>
           </md-field>
           <md-field :class="getValidationClass('end')">
-            <label for="start">Video end</label>
+            <label for="end">Video end</label>
             <md-input
               type="number"
               name="end"
@@ -73,7 +73,7 @@
               v-else-if="!$v.form.end.max">Invalid video end time</span>
           </md-field>
           <md-field :class="getValidationClass('likes')">
-            <label for="start">Video likes</label>
+            <label for="likes">Video likes</label>
             <md-input
               type="number"
               name="likes"
@@ -85,23 +85,23 @@
               v-if="!$v.form.likes.min">Invalid video likes amount</span>
           </md-field>
           <md-field :class="getValidationClass('dislikes')">
-            <label for="start">Video dislikes</label>
+            <label for="dislikes">Video dislikes</label>
             <md-input
               type="number"
               name="dislikes"
               id="dislikes"
-              v-model="form.stdislikesart"
+              v-model="form.dislikes"
               :disabled="loading" />
             <span
               class="md-error"
               v-if="!$v.form.dislikes.min">Invalid video dislikes amount</span>
           </md-field>
           <md-field :class="getValidationClass('reports')">
-            <label for="start">Video reports</label>
+            <label for="reports">Video reports</label>
             <md-input
               type="number"
-              name="start"
-              id="start"
+              name="reports"
+              id="reports"
               v-model="form.reports"
               :disabled="loading" />
             <span
