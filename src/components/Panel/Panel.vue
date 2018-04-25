@@ -23,9 +23,7 @@
         </div>
       </md-app-toolbar>
 
-      <md-app-drawer
-        :md-active.sync="showNavigation"
-        md-persistent="full">
+      <md-app-drawer :md-active.sync="showNavigation">
         <md-toolbar
           class="md-transparent"
           md-elevation="0">

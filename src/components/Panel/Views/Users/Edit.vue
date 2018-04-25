@@ -205,7 +205,7 @@ export default {
   },
   async created() {
     this.loading = true;
-    this.currentUser = auth.getUser();
+    this.currentUser = await auth.getUser();
     try {
       const response = await this.$http.get(`${this.apiEndpoint}/users/id/${this.id}`, { headers: await auth.getAuthHeader() });
       this.form = response.body;

@@ -13,9 +13,7 @@
         <md-table-head md-numeric>ID</md-table-head>
         <md-table-head>Name</md-table-head>
         <md-table-head>Video ID</md-table-head>
-        <md-table-head>Views</md-table-head>
-        <md-table-head>Starting at</md-table-head>
-        <md-table-head>Ending at</md-table-head>
+        <md-table-head>Views/Start/End</md-table-head>
         <md-table-head>Likes/Dislikes/Reports</md-table-head>
         <md-table-head>Changed by</md-table-head>
         <md-table-head>Actions</md-table-head>
@@ -26,9 +24,7 @@
         <md-table-cell>{{ (index + 1) + ((Page - 1) * limit) }}</md-table-cell>
         <md-table-cell :title="video.friendlyName">{{ (video.friendlyName == null ? 'NONE' : video.friendlyName) }}</md-table-cell>
         <md-table-cell>{{ video.videoId }}</md-table-cell>
-        <md-table-cell>{{ video.views }}</md-table-cell>
-        <md-table-cell>{{ video.start === null || 0 ? 'At video start' : video.start }}</md-table-cell>
-        <md-table-cell>{{ video.end === null || 0 ? 'At video end' : video.end }}</md-table-cell>
+        <md-table-cell>{{ `${video.views}/${video.start === null || 0 ? 0 : video.start}/${video.end === null || 0 ? 0 : video.end}` }}</md-table-cell>
         <md-table-cell>{{ `${video.likes === null || 0 ? 0 : video.likes}/${video.dislikes === null || 0 ? 0 : video.dislikes}/${video.reports === null || 0 ? 0 : video.reports}` }}</md-table-cell>
         <md-table-cell :title="video.updated">{{ video.changedBy == null ? 'UFO' : video.changedBy }}</md-table-cell>
         <md-table-cell>
@@ -238,13 +234,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-td:nth-child(2) {
-    max-width: 300px;
-}
 .page-container {
   min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  .md-table-cell-container .md-button:nth-child(1) {
+    margin-left: 0;
+  }
 }
 </style>

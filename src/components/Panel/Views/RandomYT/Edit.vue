@@ -250,7 +250,7 @@ export default {
   async created() {
     try {
       this.loading = true;
-      this.currentUser = auth.getUser();
+      this.currentUser = await auth.getUser();
       const response = await this.$http.get(`${this.apiEndpoint}/yrvs/id/${this.id}`, { headers: await auth.getAuthHeader() });
       this.form = response.body;
       this.videoOld = JSON.stringify(this.form);
