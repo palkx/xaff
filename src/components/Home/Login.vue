@@ -176,6 +176,10 @@ export default {
       justify-content: center;
       flex-direction: column;
       background-color: lightgrey;
+
+      .md-card {
+        margin: auto;
+      }
     }
 
     form {
