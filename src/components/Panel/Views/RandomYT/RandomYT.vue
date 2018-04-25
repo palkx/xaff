@@ -33,22 +33,37 @@
         <md-table-cell :title="video.updated">{{ video.changedBy == null ? 'UFO' : video.changedBy }}</md-table-cell>
         <md-table-cell>
           <md-button
+            title="Play video"
+            :href="`https://yrv.xaff.ru/${video.videoId}?start=${video.start}&end=${video.end}`"
+            target="_blank"
+            class="md-icon-button md-accent">
+            <md-icon>play_arrow</md-icon>
+          </md-button>
+          <md-button
             v-if="video.disabled"
-            class="md-raised md-accent"
-            @click="toggleShow(video, index)">Enable
+            title="Enable"
+            class="md-icon-button md-primary"
+            @click="toggleShow(video, index)">
+            <md-icon>sync_disabled</md-icon>
           </md-button>
           <md-button
             v-else
-            class="md-raised md-primary"
-            @click="toggleShow(video, index)">Disable
+            title="Disable"
+            class="md-icon-button md-primary"
+            @click="toggleShow(video, index)">
+            <md-icon>sync</md-icon>
           </md-button>
           <md-button
+            title="Edit"
             :to="`ryt/edit/${video._id}`"
-            class="md-raised md-primary">Edit
+            class="md-icon-button md-primary">
+            <md-icon>mode_edit</md-icon>
           </md-button>
           <md-button
-            class="md-raised md-accent"
-            @click="vDelete(index, video._id)">Delete
+            title="Remove"
+            class="md-icon-button md-accent"
+            @click="vDelete(index, video._id)">
+            <md-icon>delete</md-icon>
           </md-button>
         </md-table-cell>
       </md-table-row>
