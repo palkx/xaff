@@ -30,7 +30,7 @@
         <md-table-cell>
           <md-button
             title="Edit"
-            :to="`user/edit/${user._id}`"
+            :to="`users/edit/${user._id}`"
             class="md-icon-button md-primary">
             <md-icon>mode_edit</md-icon>
           </md-button>
