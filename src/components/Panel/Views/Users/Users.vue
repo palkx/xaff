@@ -29,12 +29,16 @@
         <md-table-cell :title="user.updated">{{ user.changedBy == null ? 'UFO' : user.changedBy }}</md-table-cell>
         <md-table-cell>
           <md-button
-            :to="`users/edit/${user._id}`"
-            class="md-raised md-primary">Edit
+            title="Edit"
+            :to="`user/edit/${user._id}`"
+            class="md-icon-button md-primary">
+            <md-icon>mode_edit</md-icon>
           </md-button>
           <md-button
-            class="md-raised md-accent"
-            @click="uDelete(index, user._id)">Delete
+            title="Remove"
+            class="md-icon-button md-accent"
+            @click="uDelete(index, user._id)">
+            <md-icon>delete</md-icon>
           </md-button>
         </md-table-cell>
       </md-table-row>

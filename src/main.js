@@ -22,4 +22,7 @@ new Vue({
 /*
   TODO:
   Add multiple items without page reload
+  Add play video button
+  FIXME:
+  Buttons on RYT page
 */
