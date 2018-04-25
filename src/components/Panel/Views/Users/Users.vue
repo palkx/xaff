@@ -183,5 +183,9 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    .md-table-cell-container .md-button:nth-child(1) {
+      margin-left: 0;
+    }
   }
 </style>
