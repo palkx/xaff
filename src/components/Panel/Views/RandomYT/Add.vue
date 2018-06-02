@@ -262,20 +262,24 @@ export default {
             this.form.dislikes = 0;
             this.form.reports = 0;
             this.loaded = true;
-          } else {
-            this.$notify({
-              'group': 'responses',
-              'type': 'error',
-              'animation-type': 'velocity',
-              'title': 'RandomYT',
-              'text': 'Cant load this video, sorry',
-              'reverse': true
-            });
+            setTimeout(() => {
+              this.fetchingVideo = false;
+            }, 300);
+            return true;
           }
         }
+        this.$notify({
+          'group': 'responses',
+          'type': 'error',
+          'animation-type': 'velocity',
+          'title': 'RandomYT',
+          'text': 'Cant load this video, sorry',
+          'reverse': true
+        });
         setTimeout(() => {
           this.fetchingVideo = false;
         }, 300);
+        return false;
       }, 800);
     },
     validate() {
