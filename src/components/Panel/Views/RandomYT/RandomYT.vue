@@ -156,7 +156,6 @@ export default {
         video.disabled = !video.disabled;
         video.changedBy = this.currentUser.username;
         const response = await this.$http.put(`${this.apiEndpoint}/yrvs/id/${video._id}`, video, { headers: await auth.getAuthHeader() });
-        console.log(response.body);
         if (response.status === 200) {
           this.$notify({
             'group': 'responses',
@@ -169,7 +168,6 @@ export default {
           this.ytVideos[index].disabled = video.disabled;
         }
       } catch (e) {
-        console.log(e);
         this.$notify({
           'group': 'responses',
           'type': 'error',
