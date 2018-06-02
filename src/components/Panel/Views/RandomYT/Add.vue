@@ -4,33 +4,23 @@
       novalidate
       class="md-layout"
       @submit.prevent="validate()">
-      <md-card class="md-layout-item md-with-hover md-size-75 md-small-size-100">
+      <md-card class="md-layout-item md-with-hover md-size-80 md-small-size-100">
 
         <md-card-header>
           <div class="md-title">Adding video</div>
         </md-card-header>
 
         <md-card-content>
-          <md-field :class="getValidationClass('friendlyName')">
-            <label for="friendlyName">Video Name</label>
-            <md-input
-              type="text"
-              name="friendlyName"
-              id="friendlyName"
-              v-model="form.friendlyName"
-              :disabled="loading" />
-            <span
-              class="md-error"
-              v-if="!$v.form.friendlyName.required">Video name is required</span>
-          </md-field>
           <md-field :class="getValidationClass('videoId')">
             <label for="videoId">Video ID</label>
             <md-input
               type="text"
               name="videoId"
               id="videoId"
+              maxlength="11"
               v-model="form.videoId"
-              :disabled="loading" />
+              @input="getVideo($event)"
+              :disabled="adding" />
             <span
               class="md-error"
               v-if="!$v.form.videoId.required">Video ID is required</span>
@@ -41,14 +31,27 @@
               class="md-error"
               v-else-if="!$v.form.videoId.maxLength">Invalid video ID lenght</span>
           </md-field>
+          <md-field :class="getValidationClass('friendlyName')">
+            <label for="friendlyName">Video Name</label>
+            <md-input
+              type="text"
+              name="friendlyName"
+              id="friendlyName"
+              v-model="form.friendlyName"
+              :disabled="adding || !loaded" />
+            <span
+              class="md-error"
+              v-if="!$v.form.friendlyName.required">Video name is required</span>
+          </md-field>
           <md-field :class="getValidationClass('start')">
             <label for="start">Video start</label>
             <md-input
               type="number"
               name="start"
               id="start"
+              min="0"
               v-model="form.start"
-              :disabled="loading" />
+              :disabled="adding || !loaded" />
             <span
               class="md-error"
               v-if="!$v.form.start.min">Invalid video start time</span>
@@ -63,7 +66,7 @@
               name="end"
               id="end"
               v-model="form.end"
-              :disabled="loading" />
+              :disabled="adding || !loaded" />
             <span
               class="md-error"
               v-if="!$v.form.end.min">Invalid video end time</span>
@@ -74,12 +77,11 @@
           <md-field :class="getValidationClass('likes')">
             <label for="likes">Video likes</label>
             <md-input
-              value="0"
               type="number"
               name="likes"
               id="likes"
               v-model="form.likes"
-              :disabled="loading" />
+              :disabled="adding || !loaded" />
             <span
               class="md-error"
               v-if="!$v.form.likes.min">Invalid video likes amount</span>
@@ -87,12 +89,11 @@
           <md-field :class="getValidationClass('dislikes')">
             <label for="dislikes">Video dislikes</label>
             <md-input
-              value="0"
               type="number"
               name="dislikes"
               id="dislikes"
               v-model="form.dislikes"
-              :disabled="loading" />
+              :disabled="adding || !loaded" />
             <span
               class="md-error"
               v-if="!$v.form.dislikes.min">Invalid video dislikes amount</span>
@@ -100,12 +101,11 @@
           <md-field :class="getValidationClass('reports')">
             <label for="reports">Video reports</label>
             <md-input
-              value="0"
               type="number"
               name="reports"
               id="reports"
               v-model="form.reports"
-              :disabled="loading" />
+              :disabled="adding || !loaded" />
             <span
               class="md-error"
               v-if="!$v.form.reports.min">Invalid video reports amount</span>
@@ -113,13 +113,13 @@
         </md-card-content>
         <md-progress-bar
           md-mode="indeterminate"
-          v-if="loading" />
+          v-if="adding || fetchingVideo" />
         <md-card-actions>
           <md-button to="/panel/ryt">Cancel</md-button>
           <md-button
             type="submit"
             class="md-primary"
-            :disabled="loading">Add</md-button>
+            :disabled="adding || !loaded">Add</md-button>
         </md-card-actions>
       </md-card>
     </form>
@@ -151,7 +151,11 @@ export default {
         reports: null,
         disabled: null
       },
-      loading: false,
+      video: null, // Saves response about video
+      inputTimer: null, // Timer that launches when user finishes input videoID
+      loaded: false, // True when video information retrieved
+      fetchingVideo: false, // True when video information loading
+      adding: false, // True when awaiting response from api
       currentUser: null
     };
   },
@@ -186,7 +190,7 @@ export default {
   },
   methods: {
     async add() {
-      this.loading = true;
+      this.adding = true;
       this.form.changedBy = this.currentUser.username;
       try {
         const response = await this.$http.post(`${this.apiEndpoint}/yrvs`, this.form, { headers: await auth.getAuthHeader() });
@@ -199,7 +203,7 @@ export default {
             'text': 'Video successfully added',
             'reverse': true
           });
-          this.loading = false;
+          this.adding = false;
           this.$router.push('/panel/ryt');
         }
       } catch (e) {
@@ -238,6 +242,41 @@ export default {
           break;
         }
       }
+    },
+    async getVideo(id) {
+      if (this.loaded) {
+        this.loaded = false;
+      }
+      if (this.inputTimer) {
+        clearTimeout(this.inputTimer);
+        this.inputTimer = null;
+      }
+      this.inputTimer = await setTimeout(async () => {
+        this.fetchingVideo = true;
+        const response = await this.$http.get(`${this.gApiEndpoint}?id=${id}&key=${this.gApiKey}&part=snippet`);
+        if (response.status === 200) {
+          if (response.body.items[0]) {
+            this.video = response.body;
+            this.form.friendlyName = this.video.items[0].snippet.title;
+            this.form.likes = 0;
+            this.form.dislikes = 0;
+            this.form.reports = 0;
+            this.loaded = true;
+          } else {
+            this.$notify({
+              'group': 'responses',
+              'type': 'error',
+              'animation-type': 'velocity',
+              'title': 'RandomYT',
+              'text': 'Cant load this video, sorry',
+              'reverse': true
+            });
+          }
+        }
+        setTimeout(() => {
+          this.fetchingVideo = false;
+        }, 300);
+      }, 800);
     },
     validate() {
       this.$v.$touch();

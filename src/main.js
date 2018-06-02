@@ -10,6 +10,8 @@ Vue.config.productionTip = false;
 auth.checkAuth();
 
 Vue.prototype.apiEndpoint = 'https://api.xaff.ru';
+Vue.prototype.gApiEndpoint = 'https://www.googleapis.com/youtube/v3/videos';
+Vue.prototype.gApiKey = 'AIzaSyBCzvJcO9dv-cxb3CNwYQ89hohqsBAubUQ';
 
 /* eslint-disable no-new */
 new Vue({

@@ -1,37 +1,11 @@
 <template>
   <div class="page-container">
-    <md-toolbar class="md-primary">
-      <md-button
-        class="md-icon-button"
-        @click="showNavigation = true">
-        <md-icon>menu</md-icon>
-      </md-button>
-      <span class="md-title">XaFF</span>
-    </md-toolbar>
-
-    <md-drawer :md-active.sync="showNavigation">
-      <md-toolbar
-        class="md-transparent"
-        md-elevation="0">
-        <span class="md-title">XaFF</span>
-      </md-toolbar>
-
-      <md-list>
-        <md-list-item>
-          <md-icon>home</md-icon>
-          <span
-            to="/"
-            class="md-list-item-text">Home</span>
-        </md-list-item>
-      </md-list>
-    </md-drawer>
-
     <md-content>
       <form
         novalidate
         class="md-layout"
         @submit.prevent="validateUser">
-        <md-card class="md-layout-item md-with-hover md-size-40 md-small-size-100">
+        <md-card class="md-layout-item md-with-hover md-size-50 md-small-size-100">
           <md-card-media md-ratio="16:9">
             <img
               src="./../../assets/img/cover.jpg"

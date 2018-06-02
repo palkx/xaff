@@ -4,7 +4,7 @@
       <md-table-toolbar>
         <h1 class="md-title">Random YT videos</h1>
         <md-button
-          class="md-icon-button md-primary"
+          class="md-icon-button md-raised md-primary"
           to="/panel/ryt/add">
           <md-icon>add</md-icon>
         </md-button>
@@ -29,7 +29,6 @@
         <md-table-cell :title="video.updated">{{ video.changedBy == null ? 'UFO' : video.changedBy }}</md-table-cell>
         <md-table-cell>
           <md-button
-            @click="viewed(video._id)"
             title="Play video"
             :href="`https://yrv.xaff.ru/${video.videoId}?start=${video.start}&end=${video.end}`"
             target="_blank"
@@ -120,10 +119,6 @@ export default {
   methods: {
     async changePage() {
       await this.getVideos();
-    },
-    viewed(id) {
-      this.$http.get(`${this.apiEndpoint}/yrvs/id/${id}/viewed`);
-      return true;
     },
     async vDelete(i, id) {
       try {
