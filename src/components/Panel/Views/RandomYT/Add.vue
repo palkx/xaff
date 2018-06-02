@@ -207,8 +207,7 @@ export default {
           this.$router.push('/panel/ryt');
         }
       } catch (e) {
-        this.loadin = false;
-        console.log(e);
+        this.adding = false;
         switch (e.status) {
         case 400:
           this.$notify({
