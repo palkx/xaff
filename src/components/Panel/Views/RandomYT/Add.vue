@@ -20,7 +20,7 @@
               maxlength="11"
               v-model="form.videoId"
               @input="getVideo($event)"
-              :disabled="adding" />
+              :disabled="adding || fetchingVideo" />
             <span
               class="md-error"
               v-if="!$v.form.videoId.required">Video ID is required</span>
