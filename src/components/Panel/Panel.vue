@@ -7,7 +7,9 @@
           @click="showNavigation = !showNavigation">
           <md-icon>menu</md-icon>
         </md-button>
-        <span class="md-title">XaFF</span>
+        <router-link
+          to="/"
+          class="md-title">XaFF</router-link>
         <div class="md-toolbar-section-end">
           <md-avatar
             v-if="userHasGravatar"
@@ -131,6 +133,9 @@ export default {
     flex-direction: column;
 
     .md-app-toolbar {
+      .md-title {
+        text-decoration: none;
+      }
       .end {
         flex: 1;
         justify-content: flex-end;

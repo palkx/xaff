@@ -4,7 +4,7 @@
       <md-table-toolbar>
         <h1 class="md-title">Users</h1>
         <md-button
-          class="md-icon-button md-primary"
+          class="md-icon-button md-raised md-primary"
           to="/panel/users/add">
           <md-icon>add</md-icon>
         </md-button>
